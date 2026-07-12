@@ -3,26 +3,41 @@ import flechaHaciaAbajo from "../assets/images/flechaHaciaAbajo.svg";
 import buscarIcono from "../assets/images/buscarIcono.svg";
 import "./Navbar.css";
 
-function Navbar({ nombreUsuario }) {
+function Navbar({ nombreUsuario, onAbrirSidebar }) {
   return (
     <nav className="navegacion">
-      <div className="contenedorBuscador">
-        <img className="iconoBuscar" src={buscarIcono} alt="Buscar" />
+      <div className="zonaIzquierda">
+        <button
+          className="botonMenu"
+          type="button"
+          onClick={onAbrirSidebar}
+          aria-label="Abrir menú"
+        >
+          ☰
+        </button>
 
-        <input className="buscador" type="text" placeholder="Buscar producto" />
+        <div className="contenedorBuscador">
+          <img className="iconoBuscar" src={buscarIcono} alt="" />
+
+          <input
+            className="buscador"
+            type="text"
+            placeholder="Buscar producto"
+          />
+        </div>
       </div>
 
-      <div className="contenedor">
+      <div className="contenedorUsuario">
         <img className="imagenJahir" src={imagenJahir} alt="Foto de usuario" />
 
         <p id="nombreUsuario">{nombreUsuario || "Jahir Roblero"}</p>
 
-        <button className="botonUsuario" type="button">
-          <img
-            className="imagenUsuario"
-            src={flechaHaciaAbajo}
-            alt="Abrir menú de usuario"
-          />
+        <button
+          className="botonUsuario"
+          type="button"
+          aria-label="Abrir menú de usuario"
+        >
+          <img className="imagenUsuario" src={flechaHaciaAbajo} alt="" />
         </button>
       </div>
     </nav>

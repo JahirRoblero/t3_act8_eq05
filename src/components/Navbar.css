@@ -1,33 +1,91 @@
-* {
-  border: 0;
-  padding: 0;
-  font-family: "SN Pro", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-}
-
 .navegacion {
+  width: 100%;
+  min-height: 70px;
+
   display: flex;
   justify-content: space-between;
-  border: 1px solid #bbb;
-  margin: 0;
-  padding: 20px;
+  align-items: center;
+  gap: 20px;
+
+  padding: 12px 25px;
+  border-bottom: 1px solid #eeeeee;
 }
 
-.contenedor {
+.zonaIzquierda {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  flex: 1;
+  min-width: 0;
+}
+
+.botonMenu {
+  display: none;
+}
+
+.contenedorBuscador {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  width: min(100%, 450px);
+  min-width: 0;
+}
+
+.buscador {
+  width: 100%;
+  height: 38px;
+
+  padding: 0 16px 0 43px;
+
+  background-color: #f5f6fa;
+  border: 1px solid #dddddd;
+  border-radius: 12px;
+  outline: none;
+
+  font-size: 14px;
+}
+
+.buscador:focus {
+  border-color: #ff7900;
+}
+
+.iconoBuscar {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+
+  width: 18px;
+  height: 18px;
+
+  transform: translateY(-50%);
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.contenedorUsuario {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
+
+  flex-shrink: 0;
 }
 
 .imagenJahir {
   width: clamp(40px, 4vw, 55px);
   aspect-ratio: 1 / 1;
+
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
+}
+
+#nombreUsuario {
+  margin: 0;
+  white-space: nowrap;
 }
 
 .imagenUsuario {
@@ -40,45 +98,108 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  padding: 5px;
+
   background-color: transparent;
   border: none;
-  border-radius: 50px;
-  padding: 5px;
+  border-radius: 50%;
+
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .botonUsuario:hover {
-  background-color: #bbb;
+  background-color: #eeeeee;
 }
 
-.contenedorBuscador {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: min(100%, 450px);
+@media (max-width: 768px) {
+  .navegacion {
+    min-height: 62px;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .zonaIzquierda {
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .botonMenu {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    padding: 0;
+
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+
+    font-size: 25px;
+    cursor: pointer;
+  }
+
+  .botonMenu:hover {
+    background-color: #f1f1f1;
+  }
+
+  .contenedorBuscador {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
+
+  .buscador {
+    width: 100%;
+    height: 38px;
+    padding-left: 39px;
+    font-size: 13px;
+  }
+
+  .iconoBuscar {
+    left: 12px;
+    width: 17px;
+    height: 17px;
+  }
+
+  .contenedorUsuario {
+    gap: 5px;
+  }
+
+  #nombreUsuario {
+    display: none;
+  }
+
+  .imagenJahir {
+    width: 40px;
+  }
+
+  .imagenUsuario {
+    width: 15px;
+  }
 }
 
-.buscador {
-  width: 100%;
-  height: 45px;
-  padding: 0 16px 0 45px;
-  border: 1px solid #bbb;
-  border-radius: 10px;
-  outline: none;
-  box-sizing: border-box;
-  font-size: 16px;
-  background-color: #f5f6fa;
-}
+@media (max-width: 400px) {
+  .navegacion {
+    padding: 8px;
+  }
 
-.iconoBuscar {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  width: 20px;
-  height: 20px;
-  transform: translateY(-50%);
-  object-fit: contain;
-  display: block;
-  pointer-events: none;
+  .botonMenu {
+    width: 36px;
+    height: 36px;
+    font-size: 22px;
+  }
+
+  .imagenJahir {
+    width: 36px;
+  }
+
+  .buscador {
+    height: 36px;
+  }
 }
