@@ -32,7 +32,7 @@ El proyecto se dividió en dos partes de trabajo:
 
 ## API utilizada para la tabla de datos
 
-**[PON AQUÍ LA API QUE USÓ TU COMPAÑERO]** — por ejemplo: DummyJSON Productos (`https://dummyjson.com/products`)
+DummyJSON Productos (`https://dummyjson.com/products`)
 
 ## Documentación técnica
 
@@ -118,10 +118,11 @@ Se diseñaron las 3 pantallas (login, sistema principal, formulario de edición)
 - Se construyó el modal reutilizable `EditarProductoModal.jsx`, con los campos definidos en el mockup (nombre, categoría, precio, stock, marca, descripción).
 
 ### 5. [CAPTURAS]
-![Código de sessionStorage en login.js](img/screenshots/login-sessionstorage.png)
-![Código de sessionStorage en login.js](img/screenshots/login-sessionstorage.png)
-![Código de sessionStorage en login.js](img/screenshots/login-sessionstorage.png)
-![Código de sessionStorage en login.js](img/screenshots/login-sessionstorage.png)
+![Código de sessionStorage en login.js](src/assets/screenshots/login.png)
+![Código de sessionStorage en login.js](src/assets/screenshots/agregar.png)
+![Código de sessionStorage en login.js](src/assets/screenshots/categoria.png)
+![Código de sessionStorage en login.js](src/assets/screenshots/disponibilidad.png)
+![Código de sessionStorage en login.js](src/assets/screenshots/rango-precio.png)
 
 ---
 
