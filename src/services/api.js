@@ -2,11 +2,13 @@ const LOGIN_URL = "https://dummyjson.com/auth/login";
 const SEARCH_URL = "https://dummyjson.com/users/search";
 
 export async function loginUser(email, password) {
-  const searchResponse = await fetch(`${SEARCH_URL}?q=${encodeURIComponent(email)}`);
+  const searchResponse = await fetch(
+    `${SEARCH_URL}?q=${encodeURIComponent(email)}`,
+  );
   const searchData = await searchResponse.json();
 
   const usuarioEncontrado = searchData.users.find(
-    (u) => u.email.toLowerCase() === email.toLowerCase()
+    (u) => u.email.toLowerCase() === email.toLowerCase(),
   );
 
   if (!usuarioEncontrado) {

@@ -11,6 +11,13 @@
   border-bottom: 1px solid #eeeeee;
 }
 
+.contenedor {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
 .zonaIzquierda {
   display: flex;
   align-items: center;
@@ -202,4 +209,76 @@
   .buscador {
     height: 36px;
   }
+}
+
+.contenedorUsuario {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.contenedorMenuUsuario {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.menuDesplegableUsuario {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+
+  width: 180px;
+  padding: 10px;
+
+  background-color: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+
+  z-index: 100;
+}
+
+.menuNombreUsuario {
+  margin: 0;
+  padding: 8px 10px 12px;
+
+  color: #555555;
+  font-size: 13px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.botonCerrarSesion {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 12px;
+
+  background-color: transparent;
+  border: none;
+  border-radius: 8px;
+
+  color: #d93025;
+  font-size: 14px;
+  text-align: left;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.botonCerrarSesion:hover {
+  background-color: #fff0ef;
+}
+
+.imagenUsuario {
+  width: clamp(14px, 1.5vw, 20px);
+  height: auto;
+  display: block;
+
+  transition: transform 0.25s ease;
+}
+
+.flechaAbierta {
+  transform: rotate(180deg);
 }
