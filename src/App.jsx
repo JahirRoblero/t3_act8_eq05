@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 import "./App.css";
 
 import Navbar from "./components/Navbar.jsx";
@@ -9,10 +11,53 @@ import TablaProductos from "./components/TablaProductos.jsx";
 import EditarProductoModal from "./components/EditarProductoModal.jsx";
 import AgregarProductoModal from "./components/AgregarProductoModal.jsx";
 
-import { obtenerProductos } from "./services/api.js";
+import {
+  obtenerProductos,
+  crearProductoApi,
+  actualizarProductoApi,
+  eliminarProductoApi,
+} from "./services/productosApi.js";
+
+const LIMITES_PERMITIDOS = [10, 20, 40, 50];
+
+function obtenerPaginaDesdeUrl() {
+  const parametros = new URLSearchParams(window.location.search);
+  const pagina = Number(parametros.get("page"));
+
+  if (!Number.isInteger(pagina) || pagina < 1) {
+    return 1;
+  }
+
+  return pagina;
+}
+
+function obtenerLimiteDesdeUrl() {
+  const parametros = new URLSearchParams(window.location.search);
+  const limite = Number(parametros.get("limit"));
+
+  if (!LIMITES_PERMITIDOS.includes(limite)) {
+    return 10;
+  }
+
+  return limite;
+}
+
+function actualizarPaginacionUrl(pagina, limite, reemplazar = false) {
+  const url = new URL(window.location.href);
+
+  url.searchParams.set("page", pagina.toString());
+  url.searchParams.set("limit", limite.toString());
+
+  if (reemplazar) {
+    window.history.replaceState({}, "", url);
+  } else {
+    window.history.pushState({}, "", url);
+  }
+}
 
 function App() {
   const [persona, setPersona] = useState(null);
+
   const [sidebarAbierto, setSidebarAbierto] = useState(false);
 
   const [productos, setProductos] = useState([]);
@@ -22,6 +67,7 @@ function App() {
   const [productoEditando, setProductoEditando] = useState(null);
   const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
 
+  const [textoBusqueda, setTextoBusqueda] = useState("");
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
   const [disponibilidadSeleccionada, setDisponibilidadSeleccionada] =
     useState("");
@@ -31,9 +77,10 @@ function App() {
     maximo: null,
   });
 
-  const [paginaActual, setPaginaActual] = useState(1);
+  const [paginaActual, setPaginaActual] = useState(obtenerPaginaDesdeUrl);
 
-  const productosPorPagina = 10;
+  const [productosPorPagina, setProductosPorPagina] =
+    useState(obtenerLimiteDesdeUrl);
 
   useEffect(() => {
     async function cargarProductos() {
@@ -45,7 +92,7 @@ function App() {
 
         const listaProductos = Array.isArray(datos)
           ? datos
-          : (datos.products ?? []);
+          : datos.products ?? [];
 
         setProductos(listaProductos);
       } catch (error) {
@@ -59,34 +106,98 @@ function App() {
     cargarProductos();
   }, []);
 
+  /*
+   * Escucha cuando el usuario utiliza los botones:
+   * atrás o adelante del navegador.
+   */
+  useEffect(() => {
+    function manejarCambioHistorial() {
+      const nuevaPagina = obtenerPaginaDesdeUrl();
+      const nuevoLimite = obtenerLimiteDesdeUrl();
+
+      setPaginaActual(nuevaPagina);
+      setProductosPorPagina(nuevoLimite);
+    }
+
+    window.addEventListener("popstate", manejarCambioHistorial);
+
+    return () => {
+      window.removeEventListener("popstate", manejarCambioHistorial);
+    };
+  }, []);
+
+  /*
+   * Cuando cambia un filtro, regresamos a la página 1.
+   */
   useEffect(() => {
     setPaginaActual(1);
+
+    actualizarPaginacionUrl(1, productosPorPagina, true);
   }, [
+    textoBusqueda,
     categoriaSeleccionada,
     disponibilidadSeleccionada,
     rangoPrecio.minimo,
     rangoPrecio.maximo,
+    productosPorPagina,
   ]);
 
   const productosFiltrados = productos.filter((producto) => {
-    const cumpleCategoria =
-      categoriaSeleccionada === "" ||
-      producto.category === categoriaSeleccionada;
+    const tituloProducto = String(
+      producto.title ?? producto.nombre ?? "",
+    ).toLowerCase();
 
-    const estaDisponible = producto.stock > 0;
+    const textoNormalizado = textoBusqueda.trim().toLowerCase();
+
+    const cumpleBusqueda =
+      textoNormalizado === "" ||
+      tituloProducto.includes(textoNormalizado);
+
+    const categoriaProducto = String(
+      producto.category ?? "",
+    ).toLowerCase();
+
+    const categoriaNormalizada = categoriaSeleccionada
+      .trim()
+      .toLowerCase();
+
+    const cumpleCategoria =
+      categoriaNormalizada === "" ||
+      categoriaProducto === categoriaNormalizada;
+
+    const estaDisponible = Number(producto.stock) > 0;
+
+    const disponibilidadNormalizada = disponibilidadSeleccionada
+      .trim()
+      .toLowerCase();
+
+    const esFiltroDisponible =
+      disponibilidadNormalizada === "disponible";
+
+    const esFiltroNoDisponible =
+      disponibilidadNormalizada === "no disponible" ||
+      disponibilidadNormalizada === "no-disponible" ||
+      disponibilidadNormalizada === "nodisponible";
 
     const cumpleDisponibilidad =
-      disponibilidadSeleccionada === "" ||
-      (disponibilidadSeleccionada === "disponible" && estaDisponible) ||
-      (disponibilidadSeleccionada === "No disponible" && !estaDisponible);
+      disponibilidadNormalizada === "" ||
+      (esFiltroDisponible && estaDisponible) ||
+      (esFiltroNoDisponible && !estaDisponible);
+
+    const precioProducto = Number(producto.price);
 
     const cumplePrecioMinimo =
-      rangoPrecio.minimo === null || producto.price >= rangoPrecio.minimo;
+      rangoPrecio.minimo === null ||
+      rangoPrecio.minimo === "" ||
+      precioProducto >= Number(rangoPrecio.minimo);
 
     const cumplePrecioMaximo =
-      rangoPrecio.maximo === null || producto.price <= rangoPrecio.maximo;
+      rangoPrecio.maximo === null ||
+      rangoPrecio.maximo === "" ||
+      precioProducto <= Number(rangoPrecio.maximo);
 
     return (
+      cumpleBusqueda &&
       cumpleCategoria &&
       cumpleDisponibilidad &&
       cumplePrecioMinimo &&
@@ -106,15 +217,30 @@ function App() {
     indiceFinal,
   );
 
+  /*
+   * Evita quedarse en una página que ya no existe después
+   * de filtrar, agregar o eliminar productos.
+   */
   useEffect(() => {
-    setPaginaActual((paginaAnterior) => {
-      if (totalPaginas === 0) {
-        return 1;
+    if (totalPaginas === 0) {
+      if (paginaActual !== 1) {
+        setPaginaActual(1);
+        actualizarPaginacionUrl(1, productosPorPagina, true);
       }
 
-      return Math.min(paginaAnterior, totalPaginas);
-    });
-  }, [totalPaginas]);
+      return;
+    }
+
+    if (paginaActual > totalPaginas) {
+      setPaginaActual(totalPaginas);
+
+      actualizarPaginacionUrl(
+        totalPaginas,
+        productosPorPagina,
+        true,
+      );
+    }
+  }, [paginaActual, totalPaginas, productosPorPagina]);
 
   function abrirSidebar() {
     setSidebarAbierto(true);
@@ -132,26 +258,15 @@ function App() {
     setModalAgregarAbierto(false);
   }
 
-  function agregarProducto(nuevoProducto) {
-    setProductos((productosAnteriores) => {
-      const idMaximo = productosAnteriores.reduce(
-        (maximo, producto) => Math.max(maximo, producto.id),
-        0,
-      );
+  function abrirModalEditar(producto) {
+    setProductoEditando(producto);
+  }
 
-      const productoConId = {
-        ...nuevoProducto,
-        id: idMaximo + 1,
-      };
-
-      return [...productosAnteriores, productoConId];
-    });
-
-    setModalAgregarAbierto(false);
+  function cerrarModalEditar() {
+    setProductoEditando(null);
   }
 
   function alIniciarSesion(datosUsuario) {
-    console.log("Usuario recibido:", datosUsuario);
     setPersona(datosUsuario);
   }
 
@@ -162,33 +277,126 @@ function App() {
     setModalAgregarAbierto(false);
   }
 
-  function abrirModalEditar(producto) {
-    setProductoEditando(producto);
+  async function agregarProducto(nuevoProducto) {
+    try {
+      /*
+       * Primero se realiza el POST real a DummyJSON.
+       */
+      const respuestaApi = await crearProductoApi(nuevoProducto);
+
+      /*
+       * Después se refleja el producto en el estado local.
+       * Se genera un ID local para evitar IDs repetidos.
+       */
+      setProductos((productosAnteriores) => {
+        const idMaximo = productosAnteriores.reduce(
+          (maximo, producto) =>
+            Math.max(maximo, Number(producto.id) || 0),
+          0,
+        );
+
+        const idRespuesta = Number(respuestaApi.id) || 0;
+
+        const productoCreado = {
+          ...nuevoProducto,
+          ...respuestaApi,
+          id: Math.max(idMaximo + 1, idRespuesta),
+        };
+
+        return [...productosAnteriores, productoCreado];
+      });
+
+      setModalAgregarAbierto(false);
+
+      await Swal.fire({
+        title: "Producto agregado",
+        text: "El producto se agregó correctamente.",
+        icon: "success",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "orange",
+      });
+    } catch (error) {
+      console.error("Error al agregar producto:", error);
+
+      await Swal.fire({
+        title: "Error",
+        text: "No se pudo agregar el producto.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "orange",
+      });
+    }
   }
 
-  function cerrarModalEditar() {
-    setProductoEditando(null);
-  }
-
-  function guardarProductoEditado(datosActualizados) {
+  async function guardarProductoEditado(datosActualizados) {
     if (!productoEditando) {
       return;
     }
 
-    setProductos((productosAnteriores) =>
-      productosAnteriores.map((producto) => {
-        if (producto.id === productoEditando.id) {
-          return {
-            ...producto,
-            ...datosActualizados,
-          };
-        }
+    const confirmacion = await Swal.fire({
+      title: "¿Guardar cambios?",
+      text: `Se modificará el producto "${
+        productoEditando.title || "seleccionado"
+      }".`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, editar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "orange",
+      cancelButtonColor: "#000000",
+    });
 
-        return producto;
-      }),
-    );
+    if (!confirmacion.isConfirmed) {
+      return;
+    }
 
-    setProductoEditando(null);
+    try {
+      /*
+       * Primero hacemos el PATCH real.
+       */
+      const respuestaApi = await actualizarProductoApi(
+        productoEditando.id,
+        datosActualizados,
+      );
+
+      /*
+       * Después actualizamos el estado local.
+       */
+      setProductos((productosAnteriores) =>
+        productosAnteriores.map((producto) => {
+          if (producto.id === productoEditando.id) {
+            return {
+              ...producto,
+              ...datosActualizados,
+              ...respuestaApi,
+              id: productoEditando.id,
+            };
+          }
+
+          return producto;
+        }),
+      );
+
+      setProductoEditando(null);
+
+      await Swal.fire({
+        title: "Producto actualizado",
+        text: "Los cambios se guardaron correctamente.",
+        icon: "success",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "orange",
+      });
+    } catch (error) {
+      console.error("Error al editar producto:", error);
+
+      await Swal.fire({
+        title: "Error",
+        text: "No se pudo editar el producto.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "orange",
+      });
+    }
   }
 
   async function eliminarProducto(idProducto) {
@@ -205,7 +413,7 @@ function App() {
       showCancelButton: true,
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
-      confirmButtonColor: "rgb(255, 174, 0)",
+      confirmButtonColor: "orange",
       cancelButtonColor: "#000000",
     });
 
@@ -213,30 +421,83 @@ function App() {
       return;
     }
 
-    setProductos((productosAnteriores) =>
-      productosAnteriores.filter((producto) => producto.id !== idProducto),
-    );
+    try {
+      /*
+       * Primero se realiza el DELETE real.
+       */
+      await eliminarProductoApi(idProducto);
 
-    await Swal.fire({
-      title: "Producto eliminado",
-      text: "El producto se eliminó correctamente.",
-      icon: "success",
-      confirmButtonText: "Aceptar",
-      confirmButtonColor: "orange"
-    });
+      /*
+       * Después se elimina del estado local.
+       */
+      setProductos((productosAnteriores) =>
+        productosAnteriores.filter(
+          (producto) => producto.id !== idProducto,
+        ),
+      );
+
+      await Swal.fire({
+        title: "Producto eliminado",
+        text: "El producto se eliminó correctamente.",
+        icon: "success",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "orange",
+      });
+    } catch (error) {
+      console.error("Error al eliminar producto:", error);
+
+      await Swal.fire({
+        title: "Error",
+        text: "No se pudo eliminar el producto.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "orange",
+      });
+    }
   }
 
   function cambiarPagina(nuevaPagina) {
-    if (nuevaPagina < 1 || nuevaPagina > totalPaginas) {
+    if (
+      nuevaPagina < 1 ||
+      nuevaPagina > totalPaginas ||
+      nuevaPagina === paginaActual
+    ) {
       return;
     }
 
     setPaginaActual(nuevaPagina);
+
+    actualizarPaginacionUrl(
+      nuevaPagina,
+      productosPorPagina,
+      false,
+    );
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+
+  function cambiarProductosPorPagina(evento) {
+    const nuevoLimite = Number(evento.target.value);
+
+    if (!LIMITES_PERMITIDOS.includes(nuevoLimite)) {
+      return;
+    }
+
+    setProductosPorPagina(nuevoLimite);
+    setPaginaActual(1);
+
+    actualizarPaginacionUrl(1, nuevoLimite, false);
   }
 
   function generarIndicesPaginacion() {
     if (totalPaginas <= 5) {
-      return Array.from({ length: totalPaginas }, (_, indice) => indice + 1);
+      return Array.from(
+        { length: totalPaginas },
+        (_, indice) => indice + 1,
+      );
     }
 
     if (paginaActual <= 3) {
@@ -244,10 +505,24 @@ function App() {
     }
 
     if (paginaActual >= totalPaginas - 2) {
-      return [1, "...", totalPaginas - 2, totalPaginas - 1, totalPaginas];
+      return [
+        1,
+        "...",
+        totalPaginas - 2,
+        totalPaginas - 1,
+        totalPaginas,
+      ];
     }
 
-    return [1, "...", paginaActual, "...", totalPaginas];
+    return [
+      1,
+      "...",
+      paginaActual - 1,
+      paginaActual,
+      paginaActual + 1,
+      "...",
+      totalPaginas,
+    ];
   }
 
   if (!persona) {
@@ -259,9 +534,20 @@ function App() {
     persona.username ||
     "Usuario";
 
+  const primerRegistro =
+    productosFiltrados.length === 0 ? 0 : indiceInicial + 1;
+
+  const ultimoRegistro = Math.min(
+    indiceFinal,
+    productosFiltrados.length,
+  );
+
   return (
     <div className="layoutSistema">
-      <Sidebar abierto={sidebarAbierto} onCerrar={cerrarSidebar} />
+      <Sidebar
+        abierto={sidebarAbierto}
+        onCerrar={cerrarSidebar}
+      />
 
       {sidebarAbierto && (
         <button
@@ -283,29 +569,85 @@ function App() {
         <main className="contenidoPagina">
           <h1>Lista de productos</h1>
 
+          <div className="controlesBusquedaPaginacion">
+            <label className="grupoControlTabla">
+              <span>Buscar producto</span>
+
+              <input
+                type="search"
+                value={textoBusqueda}
+                placeholder="Buscar por nombre..."
+                onChange={(evento) =>
+                  setTextoBusqueda(evento.target.value)
+                }
+              />
+            </label>
+
+            <label className="grupoControlTabla">
+              <span>Registros por página</span>
+
+              <select
+                value={productosPorPagina}
+                onChange={cambiarProductosPorPagina}
+              >
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={40}>40</option>
+                <option value={50}>50</option>
+              </select>
+            </label>
+          </div>
+
           <BarraDeFiltros
             onCambiarCategoria={setCategoriaSeleccionada}
-            onCambiarDisponibilidad={setDisponibilidadSeleccionada}
+            onCambiarDisponibilidad={
+              setDisponibilidadSeleccionada
+            }
             onCambiarRangoPrecio={setRangoPrecio}
             onAgregarProducto={abrirModalAgregar}
           />
 
           {cargandoProductos && (
-            <p className="mensajeProductos">Cargando productos...</p>
+            <p className="mensajeProductos">
+              Cargando productos...
+            </p>
           )}
 
-          {errorProductos && <p className="errorProductos">{errorProductos}</p>}
+          {errorProductos && (
+            <p className="errorProductos">
+              {errorProductos}
+            </p>
+          )}
 
           {!cargandoProductos && !errorProductos && (
             <>
+              <div className="resumenPaginacion">
+                <p>
+                  Mostrando {primerRegistro} - {ultimoRegistro} de{" "}
+                  {productosFiltrados.length} productos
+                </p>
+
+                <p>
+                  Página {paginaActual} de {totalPaginas || 1}
+                </p>
+              </div>
+
               <section className="listaProductos">
                 <div className="cabezaTabla">
                   <p className="textoEncabezadoTabla">ID</p>
-                  <p className="textoEncabezadoTabla">Producto</p>
-                  <p className="textoEncabezadoTabla">Categoría</p>
-                  <p className="textoEncabezadoTabla">Precio</p>
+                  <p className="textoEncabezadoTabla">
+                    Producto
+                  </p>
+                  <p className="textoEncabezadoTabla">
+                    Categoría
+                  </p>
+                  <p className="textoEncabezadoTabla">
+                    Precio
+                  </p>
                   <p className="textoEncabezadoTabla">Stock</p>
-                  <p className="textoEncabezadoTabla">Acciones</p>
+                  <p className="textoEncabezadoTabla">
+                    Acciones
+                  </p>
                 </div>
 
                 {productosFiltrados.length > 0 ? (
@@ -319,7 +661,8 @@ function App() {
                   ))
                 ) : (
                   <p className="mensajeSinProductos">
-                    No se encontraron productos con esos filtros.
+                    No se encontraron productos con esos
+                    filtros.
                   </p>
                 )}
               </section>
@@ -330,36 +673,50 @@ function App() {
                     type="button"
                     className="botonIndice"
                     disabled={paginaActual === 1}
-                    onClick={() => cambiarPagina(paginaActual - 1)}
+                    onClick={() =>
+                      cambiarPagina(paginaActual - 1)
+                    }
                     aria-label="Página anterior"
                   >
                     &lt;
                   </button>
 
-                  {generarIndicesPaginacion().map((pagina, indice) =>
-                    pagina === "..." ? (
-                      <span className="puntosIndices" key={`puntos-${indice}`}>
-                        ...
-                      </span>
-                    ) : (
-                      <button
-                        type="button"
-                        key={pagina}
-                        className={`botonIndice ${
-                          paginaActual === pagina ? "indiceActivo" : ""
-                        }`}
-                        onClick={() => cambiarPagina(pagina)}
-                      >
-                        {pagina}
-                      </button>
-                    ),
+                  {generarIndicesPaginacion().map(
+                    (pagina, indice) =>
+                      pagina === "..." ? (
+                        <span
+                          className="puntosIndices"
+                          key={`puntos-${indice}`}
+                        >
+                          ...
+                        </span>
+                      ) : (
+                        <button
+                          type="button"
+                          key={`pagina-${pagina}`}
+                          className={`botonIndice ${
+                            paginaActual === pagina
+                              ? "indiceActivo"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            cambiarPagina(pagina)
+                          }
+                        >
+                          {pagina}
+                        </button>
+                      ),
                   )}
 
                   <button
                     type="button"
                     className="botonIndice"
-                    disabled={paginaActual === totalPaginas}
-                    onClick={() => cambiarPagina(paginaActual + 1)}
+                    disabled={
+                      paginaActual === totalPaginas
+                    }
+                    onClick={() =>
+                      cambiarPagina(paginaActual + 1)
+                    }
                     aria-label="Página siguiente"
                   >
                     &gt;
