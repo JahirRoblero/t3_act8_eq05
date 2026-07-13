@@ -63,3 +63,53 @@ export async function obtenerProductos() {
 
   return datos.products;
 }
+
+export async function agregarProducto(producto) {
+  const respuesta = await fetch("https://dummyjson.com/products/add", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(producto),
+  });
+
+  if (!respuesta.ok) {
+    throw new Error("No se pudo agregar el producto");
+  }
+
+  return respuesta.json();
+}
+
+export async function editarProducto(id, producto) {
+  const respuesta = await fetch(
+    `https://dummyjson.com/products/${id}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(producto),
+    }
+  );
+
+  if (!respuesta.ok) {
+    throw new Error("No se pudo editar el producto");
+  }
+
+  return respuesta.json();
+}
+
+export async function eliminarProducto(id) {
+  const respuesta = await fetch(
+    `https://dummyjson.com/products/${id}`,
+    {
+      method: "DELETE",
+    }
+  );
+
+  if (!respuesta.ok) {
+    throw new Error("No se pudo eliminar el producto");
+  }
+
+  return respuesta.json();
+}
