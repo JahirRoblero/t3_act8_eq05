@@ -11,40 +11,36 @@ function Login({ onLoginExitoso }) {
   const [error, setError] = useState("");
   const [cargando, setCargando] = useState("");
 
-
-    function validacionCampos(){
+  function validacionCampos() {
     const formatoCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (nombre.trim() === "" || contraseña.trim() === "") {
-        setError("Completa el usuario y contraseña.");
-        return false;
+      setError("Completa el usuario y contraseña.");
+      return false;
     }
+
+    if (!formatoCorreo.test(nombre)) {
+      setError("Ingresa un correo electrónico válido: ejemplo@correo.com.");
+      return false;
+    }
+
     return true;
   }
 
-    if (!formatoCorreo.test(nombre)) {
-        setError("Ingresa un correo electrónico válido: ejemplo@correo.com.");
-        return false;
-    }
+  async function enviar(e) {
+    e.preventDefault();
+    setError("");
 
-    return true;
-}
+    if (!validacionCampos()) return;
 
-    async function enviar(e) {
-        e.preventDefault();
-        setError("")
-    
-        if(!validacionCampos()) return 
-            
-            setCargando(true)
-            try {
-                const usuario = await loginUser(nombre,contraseña);
-                onLoginExitoso(usuario) 
-            }catch(err){
-                setError(err.message)
-            } finally {
-                setCargando(false)
-            }
+    setCargando(true);
+    try {
+      const usuario = await loginUser(nombre, contraseña);
+      onLoginExitoso(usuario);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setCargando(false);
     }
   }
 

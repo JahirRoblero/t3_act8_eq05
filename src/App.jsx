@@ -17,16 +17,23 @@ function App() {
   }
 
   function alIniciarSesion(datosUsuario) {
+    console.log("Usuario recibido:", datosUsuario);
     setPersona(datosUsuario);
   }
 
   function cerrarSesion() {
     setPersona(null);
+    setSidebarAbierto(false);
   }
 
   if (!persona) {
     return <Login onLoginExitoso={alIniciarSesion} />;
   }
+
+  const nombreCompleto =
+    `${persona.firstName || ""} ${persona.lastName || ""}`.trim() ||
+    persona.username ||
+    "Usuario";
 
   return (
     <div className="layoutSistema">
@@ -42,7 +49,12 @@ function App() {
       )}
 
       <div className="areaPrincipal">
-        <Navbar onAbrirSidebar={abrirSidebar} />
+        <Navbar
+          nombreUsuario={nombreCompleto}
+          imagenPerfil={persona.image}
+          onAbrirSidebar={abrirSidebar}
+          onCerrarSesion={cerrarSesion}
+        />
 
         <main className="contenidoPagina">
           <h1>Lista de productos</h1>

@@ -3,7 +3,12 @@ import flechaHaciaAbajo from "../assets/images/flechaHaciaAbajo.svg";
 import buscarIcono from "../assets/images/buscarIcono.svg";
 import "./Navbar.css";
 
-function Navbar({ nombreUsuario, onAbrirSidebar }) {
+function Navbar({
+  nombreUsuario,
+  imagenPerfil,
+  onAbrirSidebar,
+  onCerrarSesion,
+}) {
   return (
     <nav className="navegacion">
       <div className="zonaIzquierda">
@@ -27,15 +32,21 @@ function Navbar({ nombreUsuario, onAbrirSidebar }) {
         </div>
       </div>
 
-      <div className="contenedorUsuario">
-        <img className="imagenJahir" src={imagenJahir} alt="Foto de usuario" />
+      <div className="contenedor">
+        <img
+          className="imagenJahir"
+          src={imagenPerfil || imagenJahir}
+          alt={`Foto de ${nombreUsuario}`}
+        />
 
-        <p id="nombreUsuario">{nombreUsuario || "Jahir Roblero"}</p>
+        <p id="nombreUsuario">{nombreUsuario}</p>
 
         <button
           className="botonUsuario"
           type="button"
-          aria-label="Abrir menú de usuario"
+          onClick={onCerrarSesion}
+          aria-label="Cerrar sesión"
+          title="Cerrar sesión"
         >
           <img className="imagenUsuario" src={flechaHaciaAbajo} alt="" />
         </button>
