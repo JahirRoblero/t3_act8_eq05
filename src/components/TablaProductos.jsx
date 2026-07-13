@@ -1,16 +1,46 @@
 import "./TablaProductos.css";
 
-function TablaProductos({ id, nombreProducto, categoria, precio, stock }) {
+function TablaProductos({
+  producto,
+  onEditar,
+  onEliminar,
+}) {
   return (
     <div className="contenidoTabla">
-      <p className="datosProducto">{id}</p>
-      <p className="datosProducto">{nombreProducto}</p>
-      <p className="datosProducto">{categoria}</p>
-      <p className="datosProducto">{precio}</p>
-      <p className="datosProducto">{stock}</p>
+      <p className="datosProducto">{producto.id}</p>
+
+      <p className="datosProducto">
+        {producto.title}
+      </p>
+
+      <p className="datosProducto">
+        {producto.category}
+      </p>
+
+      <p className="datosProducto">
+        ${producto.price}
+      </p>
+
+      <p className="datosProducto">
+        {producto.stock}
+      </p>
+
       <div className="botones">
-        <button className="botonEditar">Editar</button>
-        <button className="botonEliminar">Eliminar</button>
+        <button
+          type="button"
+          className="botonEditar"
+          onClick={() => onEditar(producto)}
+        >
+          Editar
+        </button>
+
+        <button
+          type="button"
+          className="botonEliminar"
+          onClick={() => onEliminar(producto.id)}
+        >
+          Eliminar
+        </button>
       </div>
     </div>
   );
