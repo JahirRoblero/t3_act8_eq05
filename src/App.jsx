@@ -13,15 +13,14 @@ import { obtenerProductos } from "./services/api.js";
 
 function App() {
   const [persona, setPersona] = useState(null);
-
   const [sidebarAbierto, setSidebarAbierto] = useState(false);
 
   const [productos, setProductos] = useState([]);
+  const [cargandoProductos, setCargandoProductos] = useState(true);
+  const [errorProductos, setErrorProductos] = useState("");
 
   const [productoEditando, setProductoEditando] = useState(null);
   const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
-  const [cargandoProductos, setCargandoProductos] = useState(true);
-  const [errorProductos, setErrorProductos] = useState("");
 
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
   const [disponibilidadSeleccionada, setDisponibilidadSeleccionada] =
@@ -32,8 +31,13 @@ function App() {
     maximo: null,
   });
 
+  const [paginaActual, setPaginaActual] = useState(1);
 
+  const productosPorPagina = 10;
 
+  /*
+   * Cargar productos desde la API.
+   */
   useEffect(() => {
     async function cargarProductos() {
       setCargandoProductos(true);
@@ -42,7 +46,11 @@ function App() {
       try {
         const datos = await obtenerProductos();
 
-        setProductos(datos.products ?? datos);
+        const listaProductos = Array.isArray(datos)
+          ? datos
+          : datos.products ?? [];
+
+        setProductos(listaProductos);
       } catch (error) {
         console.error("Error al obtener productos:", error);
         setErrorProductos("No se pudieron cargar los productos.");
@@ -54,6 +62,78 @@ function App() {
     cargarProductos();
   }, []);
 
+  /*
+   * Regresar a la página 1 cuando se cambie algún filtro.
+   */
+  useEffect(() => {
+    setPaginaActual(1);
+  }, [
+    categoriaSeleccionada,
+    disponibilidadSeleccionada,
+    rangoPrecio.minimo,
+    rangoPrecio.maximo,
+  ]);
+
+  /*
+   * Aplicar todos los filtros.
+   */
+  const productosFiltrados = productos.filter((producto) => {
+    const cumpleCategoria =
+      categoriaSeleccionada === "" ||
+      producto.category === categoriaSeleccionada;
+
+    const estaDisponible = producto.stock > 0;
+
+    const cumpleDisponibilidad =
+      disponibilidadSeleccionada === "" ||
+      (disponibilidadSeleccionada === "disponible" && estaDisponible) ||
+      (disponibilidadSeleccionada === "No disponible" && !estaDisponible);
+
+    const cumplePrecioMinimo =
+      rangoPrecio.minimo === null ||
+      producto.price >= rangoPrecio.minimo;
+
+    const cumplePrecioMaximo =
+      rangoPrecio.maximo === null ||
+      producto.price <= rangoPrecio.maximo;
+
+    return (
+      cumpleCategoria &&
+      cumpleDisponibilidad &&
+      cumplePrecioMinimo &&
+      cumplePrecioMaximo
+    );
+  });
+
+  /*
+   * Calcular la paginación.
+   */
+  const totalPaginas = Math.ceil(
+    productosFiltrados.length / productosPorPagina,
+  );
+
+  const indiceInicial = (paginaActual - 1) * productosPorPagina;
+  const indiceFinal = indiceInicial + productosPorPagina;
+
+  const productosPaginados = productosFiltrados.slice(
+    indiceInicial,
+    indiceFinal,
+  );
+
+  /*
+   * Corregir la página cuando se elimina el último producto
+   * de una página.
+   */
+  useEffect(() => {
+    setPaginaActual((paginaAnterior) => {
+      if (totalPaginas === 0) {
+        return 1;
+      }
+
+      return Math.min(paginaAnterior, totalPaginas);
+    });
+  }, [totalPaginas]);
+
   function abrirSidebar() {
     setSidebarAbierto(true);
   }
@@ -62,9 +142,7 @@ function App() {
     setSidebarAbierto(false);
   }
 
-
-
-   function abrirModalAgregar() {
+  function abrirModalAgregar() {
     setModalAgregarAbierto(true);
   }
 
@@ -73,24 +151,22 @@ function App() {
   }
 
   function agregarProducto(nuevoProducto) {
-  setProductos((productosAnteriores) => {
-    const idMaximo = productosAnteriores.reduce(
-      (maximo, producto) => Math.max(maximo, producto.id),
-      0
-    );
-    return [
-      ...productosAnteriores,
-      {
+    setProductos((productosAnteriores) => {
+      const idMaximo = productosAnteriores.reduce(
+        (maximo, producto) => Math.max(maximo, producto.id),
+        0,
+      );
+
+      const productoConId = {
         ...nuevoProducto,
         id: idMaximo + 1,
-      },
-    ];
-  });
+      };
 
-  setModalAgregarAbierto(false);
-}
+      return [...productosAnteriores, productoConId];
+    });
 
-
+    setModalAgregarAbierto(false);
+  }
 
   function alIniciarSesion(datosUsuario) {
     console.log("Usuario recibido:", datosUsuario);
@@ -101,11 +177,10 @@ function App() {
     setPersona(null);
     setSidebarAbierto(false);
     setProductoEditando(null);
+    setModalAgregarAbierto(false);
   }
 
-
   function abrirModalEditar(producto) {
-
     setProductoEditando(producto);
   }
 
@@ -156,33 +231,49 @@ function App() {
     );
   }
 
-  const productosFiltrados = productos.filter((producto) => {
-    const cumpleCategoria =
-      categoriaSeleccionada === "" ||
-      producto.category === categoriaSeleccionada;
+  function cambiarPagina(nuevaPagina) {
+    if (nuevaPagina < 1 || nuevaPagina > totalPaginas) {
+      return;
+    }
 
-    const estaDisponible = producto.stock > 0;
+    setPaginaActual(nuevaPagina);
+  }
 
-    const cumpleDisponibilidad =
-      disponibilidadSeleccionada === "" ||
-      (disponibilidadSeleccionada === "disponible" && estaDisponible) ||
-      (disponibilidadSeleccionada === "No disponible" && !estaDisponible);
+  /*
+   * Genera índices como:
+   * < 1 2 3 ... 10 >
+   */
+  function generarIndicesPaginacion() {
+    if (totalPaginas <= 5) {
+      return Array.from(
+        { length: totalPaginas },
+        (_, indice) => indice + 1,
+      );
+    }
 
-    const cumplePrecioMinimo =
-      rangoPrecio.minimo === null ||
-      producto.price >= rangoPrecio.minimo;
+    if (paginaActual <= 3) {
+      return [1, 2, 3, "...", totalPaginas];
+    }
 
-    const cumplePrecioMaximo =
-      rangoPrecio.maximo === null ||
-      producto.price <= rangoPrecio.maximo;
+    if (paginaActual >= totalPaginas - 2) {
+      return [
+        1,
+        "...",
+        totalPaginas - 2,
+        totalPaginas - 1,
+        totalPaginas,
+      ];
+    }
 
-    return (
-      cumpleCategoria &&
-      cumpleDisponibilidad &&
-      cumplePrecioMinimo &&
-      cumplePrecioMaximo
-    );
-  });
+    return [
+      1,
+      "...",
+      paginaActual,
+      "...",
+      totalPaginas,
+    ];
+  }
+
   if (!persona) {
     return <Login onLoginExitoso={alIniciarSesion} />;
   }
@@ -218,49 +309,125 @@ function App() {
 
         <main className="contenidoPagina">
           <h1>Lista de productos</h1>
-          
-          
+
           <BarraDeFiltros
             onCambiarCategoria={setCategoriaSeleccionada}
-            onCambiarDisponibilidad={setDisponibilidadSeleccionada}
+            onCambiarDisponibilidad={
+              setDisponibilidadSeleccionada
+            }
             onCambiarRangoPrecio={setRangoPrecio}
             onAgregarProducto={abrirModalAgregar}
           />
 
           {cargandoProductos && (
-            <p className="mensajeProductos">Cargando productos...</p>
+            <p className="mensajeProductos">
+              Cargando productos...
+            </p>
           )}
 
           {errorProductos && (
-            <p className="errorProductos">{errorProductos}</p>
+            <p className="errorProductos">
+              {errorProductos}
+            </p>
           )}
 
           {!cargandoProductos && !errorProductos && (
-            <section className="listaProductos">
-              <div className="cabezaTabla">
-                <p className="textoEncabezadoTabla">ID</p>
-                <p className="textoEncabezadoTabla">Producto</p>
-                <p className="textoEncabezadoTabla">Categoría</p>
-                <p className="textoEncabezadoTabla">Precio</p>
-                <p className="textoEncabezadoTabla">Stock</p>
-                <p className="textoEncabezadoTabla">Acciones</p>
-              </div>
+            <>
+              <section className="listaProductos">
+                {/* Este encabezado solamente se muestra una vez */}
+                <div className="cabezaTabla">
+                  <p className="textoEncabezadoTabla">ID</p>
+                  <p className="textoEncabezadoTabla">
+                    Producto
+                  </p>
+                  <p className="textoEncabezadoTabla">
+                    Categoría
+                  </p>
+                  <p className="textoEncabezadoTabla">
+                    Precio
+                  </p>
+                  <p className="textoEncabezadoTabla">
+                    Stock
+                  </p>
+                  <p className="textoEncabezadoTabla">
+                    Acciones
+                  </p>
+                </div>
 
-              {productosFiltrados.length > 0 ? (
-                productosFiltrados.map((producto) => (
-                  <TablaProductos
-                    key={producto.id}
-                    producto={producto}
-                    onEditar={abrirModalEditar}
-                    onEliminar={eliminarProducto}
-                  />
-                ))
-              ) : (
-                <p className="mensajeSinProductos">
-                  No se encontraron productos con esos filtros.
-                </p>
+                {productosFiltrados.length > 0 ? (
+                  productosPaginados.map((producto) => (
+                    <TablaProductos
+                      key={producto.id}
+                      producto={producto}
+                      onEditar={abrirModalEditar}
+                      onEliminar={eliminarProducto}
+                    />
+                  ))
+                ) : (
+                  <p className="mensajeSinProductos">
+                    No se encontraron productos con esos
+                    filtros.
+                  </p>
+                )}
+              </section>
+
+              {totalPaginas > 1 && (
+                <div className="indices">
+                  <button
+                    type="button"
+                    className="botonIndice"
+                    disabled={paginaActual === 1}
+                    onClick={() =>
+                      cambiarPagina(paginaActual - 1)
+                    }
+                    aria-label="Página anterior"
+                  >
+                    &lt;
+                  </button>
+
+                  {generarIndicesPaginacion().map(
+                    (pagina, indice) =>
+                      pagina === "..." ? (
+                        <span
+                          className="puntosIndices"
+                          key={`puntos-${indice}`}
+                        >
+                          ...
+                        </span>
+                      ) : (
+                        <button
+                          type="button"
+                          key={pagina}
+                          className={`botonIndice ${
+                            paginaActual === pagina
+                              ? "indiceActivo"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            cambiarPagina(pagina)
+                          }
+                        >
+                          {pagina}
+                        </button>
+                      ),
+                  )}
+
+                  <button
+                    type="button"
+                    className="botonIndice"
+                    disabled={
+                      paginaActual === totalPaginas
+                    }
+                    onClick={() =>
+                      cambiarPagina(paginaActual + 1)
+                    }
+                    aria-label="Página siguiente"
+                  >
+                    &gt;
+                  </button>
+                </div>
               )}
-            </section>
+            </>
           )}
 
           {productoEditando && (
@@ -270,7 +437,6 @@ function App() {
               clickCancelar={cerrarModalEditar}
             />
           )}
-
 
           {modalAgregarAbierto && (
             <AgregarProductoModal

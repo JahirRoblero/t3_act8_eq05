@@ -77,3 +77,52 @@ body {
     cursor: pointer;
   }
 }
+
+.indices {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 22px;
+  margin-bottom: 30px;
+}
+
+.botonIndice {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+
+  border: none;
+  border-radius: 6px;
+  background-color: transparent;
+
+  color: #777;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.botonIndice:hover:not(:disabled) {
+  background-color: #f1f1f1;
+  color: #222;
+}
+
+.botonIndice:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.indiceActivo {
+  background-color: #f97316;
+  color: white;
+  font-weight: 600;
+}
+
+.indiceActivo:hover:not(:disabled) {
+  background-color: #f97316;
+  color: white;
+}
+
+.puntosIndices {
+  padding: 0 2px;
+  color: #777;
+}
