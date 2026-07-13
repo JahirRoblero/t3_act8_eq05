@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import "./EditarProductoModal.css";
+import iconField from "../assets/icons/field.svg";
+import iconTr from "../assets/icons/triangle.svg"
+import iconPrice from "../assets/icons/prce.svg"
+import iconStock from "../assets/icons/stock.svg"
 
 function EditarProductoModal({
   producto,
@@ -61,7 +65,8 @@ function EditarProductoModal({
         <form onSubmit={manejarGuardar}>
           <div className="modalCampo">
             <label htmlFor="nombreProducto">Nombre del producto</label>
-
+            <div className="loginInputConIcono">
+            <img src={iconField} alt="" className="loginIcono" />      
             <input
               type="text"
               id="nombreProducto"
@@ -70,11 +75,13 @@ function EditarProductoModal({
               placeholder="Essence Mascara Lash Princess"
               required
             />
+            </div>
           </div>
 
           <div className="modalCampo">
             <label htmlFor="categoria">Categoría</label>
-
+            <div className="loginInputConIcono">
+            <img src={iconTr} alt="" className="loginIcono" />      
             <input
               type="text"
               id="categoria"
@@ -83,12 +90,14 @@ function EditarProductoModal({
               placeholder="Belleza"
               required
             />
+            </div>
           </div>
 
           <div className="modalFila">
             <div className="modalCampo modalCampoMitad">
               <label htmlFor="precio">Precio</label>
-
+              <div className="loginInputConIcono">
+              <img src={iconPrice} alt="" className="loginIcono" />      
               <input
                 type="number"
                 id="precio"
@@ -99,11 +108,13 @@ function EditarProductoModal({
                 step="0.01"
                 required
               />
+              </div>
             </div>
 
             <div className="modalCampo modalCampoMitad">
               <label htmlFor="stock">Stock</label>
-
+              <div className="loginInputConIcono">
+              <img src={iconTr} alt="" className="loginIcono" />      
               <input
                 type="number"
                 id="stock"
@@ -113,12 +124,14 @@ function EditarProductoModal({
                 min="0"
                 required
               />
+              </div>
             </div>
           </div>
 
           <div className="modalCampo">
             <label htmlFor="marca">Marca</label>
-
+            <div className="loginInputConIcono">
+            <img src={iconField} alt="" className="loginIcono" />      
             <input
               type="text"
               id="marca"
@@ -126,6 +139,7 @@ function EditarProductoModal({
               onChange={(e) => setMarca(e.target.value)}
               placeholder="Essence"
             />
+            </div>
           </div>
 
           <div className="modalCampo">
