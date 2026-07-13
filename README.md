@@ -11,7 +11,7 @@
 **Integrantes:**
 Gomez Roblero Angel Jahir <br>
 Enríquez Rodríguez Alejandro Guillermo<br><br>
-**Fecha de entrega:** [PON AQUÍ LA FECHA]<br><br>
+**Fecha de entrega:** 13 de julio del 2026<br><br>
 
 </div>
 
