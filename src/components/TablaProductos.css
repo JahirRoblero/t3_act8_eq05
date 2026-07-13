@@ -25,3 +25,27 @@
     align-items: center;
     gap: 5px;
 }
+
+.botonEditar {
+    background-color: #f2f2fd;
+    padding: 13px;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.botonEditar:hover {
+    scale: calc(1.03);
+}
+
+.botonEliminar {
+    background-color: orange;
+    padding: 13px;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.botonEliminar:hover {
+    scale: calc(1.03);
+}
