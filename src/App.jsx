@@ -7,6 +7,7 @@ import Login from "./components/Login.jsx";
 import BarraDeFiltros from "./components/BarraDeFiltros.jsx";
 import TablaProductos from "./components/TablaProductos.jsx";
 import EditarProductoModal from "./components/EditarProductoModal.jsx";
+import AgregarProductoModal from "./components/AgregarProductoModal.jsx";
 
 import { obtenerProductos } from "./services/api.js";
 
@@ -18,7 +19,7 @@ function App() {
   const [productos, setProductos] = useState([]);
 
   const [productoEditando, setProductoEditando] = useState(null);
-
+  const [modalAgregarAbierto, setModalAgregarAbierto] = useState(false);
   const [cargandoProductos, setCargandoProductos] = useState(true);
   const [errorProductos, setErrorProductos] = useState("");
 
@@ -30,6 +31,8 @@ function App() {
     minimo: null,
     maximo: null,
   });
+
+
 
   useEffect(() => {
     async function cargarProductos() {
@@ -58,6 +61,35 @@ function App() {
   function cerrarSidebar() {
     setSidebarAbierto(false);
   }
+
+
+
+   function abrirModalAgregar() {
+    setModalAgregarAbierto(true);
+  }
+
+  function cerrarModalAgregar() {
+    setModalAgregarAbierto(false);
+  }
+
+  function agregarProducto(nuevoProducto) {
+  setProductos((productosAnteriores) => {
+    const idMaximo = productosAnteriores.reduce(
+      (maximo, producto) => Math.max(maximo, producto.id),
+      0
+    );
+    return [
+      ...productosAnteriores,
+      {
+        ...nuevoProducto,
+        id: idMaximo + 1,
+      },
+    ];
+  });
+
+  setModalAgregarAbierto(false);
+}
+
 
 
   function alIniciarSesion(datosUsuario) {
@@ -186,11 +218,13 @@ function App() {
 
         <main className="contenidoPagina">
           <h1>Lista de productos</h1>
-
+          
+          
           <BarraDeFiltros
             onCambiarCategoria={setCategoriaSeleccionada}
             onCambiarDisponibilidad={setDisponibilidadSeleccionada}
             onCambiarRangoPrecio={setRangoPrecio}
+            onAgregarProducto={abrirModalAgregar}
           />
 
           {cargandoProductos && (
@@ -234,6 +268,14 @@ function App() {
               producto={productoEditando}
               clickGuardar={guardarProductoEditado}
               clickCancelar={cerrarModalEditar}
+            />
+          )}
+
+
+          {modalAgregarAbierto && (
+            <AgregarProductoModal
+              clickGuardar={agregarProducto}
+              clickCancelar={cerrarModalAgregar}
             />
           )}
         </main>

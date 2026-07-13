@@ -8,6 +8,7 @@ function BarraDeFiltros({
   onCambiarCategoria,
   onCambiarDisponibilidad,
   onCambiarRangoPrecio,
+  onAgregarProducto
 }) {
   const [categorias, setCategorias] = useState([]);
   const [menuCategoriasAbierto, setMenuCategoriasAbierto] = useState(false);
@@ -25,6 +26,8 @@ function BarraDeFiltros({
   const [precioMaximo, setPrecioMaximo] = useState("");
   const [textoRangoPrecio, setTextoRangoPrecio] = useState("Rango de precio");
   const [errorPrecio, setErrorPrecio] = useState("");
+
+
 
   useEffect(() => {
     async function cargarCategorias() {
@@ -330,7 +333,7 @@ function BarraDeFiltros({
         Limpiar filtros
       </button>
 
-      <button type="button" className="filtrarPor accionFiltro">
+      <button type="button" className="filtrarPor accionFiltro" onClick={onAgregarProducto}>
         Agregar producto
       </button>
     </div>
