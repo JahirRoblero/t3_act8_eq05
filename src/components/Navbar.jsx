@@ -1,3 +1,4 @@
+import { useState } from "react";
 import imagenJahir from "../assets/images/imagenJahir.png";
 import flechaHaciaAbajo from "../assets/images/flechaHaciaAbajo.svg";
 import buscarIcono from "../assets/images/buscarIcono.svg";
@@ -9,6 +10,16 @@ function Navbar({
   onAbrirSidebar,
   onCerrarSesion,
 }) {
+  const [menuUsuarioAbierto, setMenuUsuarioAbierto] = useState(false);
+
+  function cambiarEstadoMenu() {
+    if (menuUsuarioAbierto === false) {
+      setMenuUsuarioAbierto(true);
+    } else {
+      setMenuUsuarioAbierto(false);
+    }
+  }
+
   return (
     <nav className="navegacion">
       <div className="zonaIzquierda">
@@ -32,7 +43,7 @@ function Navbar({
         </div>
       </div>
 
-      <div className="contenedor">
+      <div className="contenedorUsuario">
         <img
           className="imagenJahir"
           src={imagenPerfil || imagenJahir}
@@ -41,15 +52,35 @@ function Navbar({
 
         <p id="nombreUsuario">{nombreUsuario}</p>
 
-        <button
-          className="botonUsuario"
-          type="button"
-          onClick={onCerrarSesion}
-          aria-label="Cerrar sesión"
-          title="Cerrar sesión"
-        >
-          <img className="imagenUsuario" src={flechaHaciaAbajo} alt="" />
-        </button>
+        <div className="contenedorMenuUsuario">
+          <button
+            className="botonUsuario"
+            type="button"
+            onClick={cambiarEstadoMenu}
+            aria-label="Abrir menú de usuario"
+            aria-expanded={menuUsuarioAbierto}
+          >
+            <img
+              className={`imagenUsuario ${
+                menuUsuarioAbierto ? "flechaAbierta" : ""
+              }`}
+              src={flechaHaciaAbajo}
+              alt=""
+            />
+          </button>
+
+          {menuUsuarioAbierto && (
+            <div className="menuDesplegableUsuario">
+              <button
+                className="botonCerrarSesion"
+                type="button"
+                onClick={onCerrarSesion}
+              >
+                Cerrar sesión
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );
