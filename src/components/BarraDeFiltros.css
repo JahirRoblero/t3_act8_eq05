@@ -1,0 +1,258 @@
+.filtrosContenedor {
+  width: 100%;
+  min-height: 75px;
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #d2d2d2;
+  border-radius: 10px;
+  background-color: #f8f8fb;
+  overflow: hidden;
+}
+
+.filtroCelda {
+  min-height: 75px;
+  padding: 12px 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: transparent;
+  border: none;
+  border-right: 1px solid #d2d2d2;
+
+  color: #252525;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.filtroCelda:last-child {
+  border-right: none;
+}
+
+.filtroCelda p {
+  margin: 0;
+}
+
+.filtroIconoCelda {
+  flex: 0 0 90px;
+}
+
+.filtroTitulo {
+  flex: 0 0 160px;
+}
+
+.filtroDesplegable {
+  flex: 1;
+  justify-content: space-between;
+  gap: 20px;
+
+  cursor: pointer;
+}
+
+.iconoFiltro {
+  width: clamp(25px, 2vw, 38px);
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+}
+
+.iconoFlechaFiltro {
+  width: 17px;
+  height: 17px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.limpiarFiltros {
+  flex: 0 0 190px;
+  color: #ff7900;
+  cursor: pointer;
+}
+
+.agregarProducto {
+  flex: 0 0 190px;
+  cursor: pointer;
+}
+
+.filtroDesplegable:hover,
+.limpiarFiltros:hover,
+.agregarProducto:hover {
+  background-color: #eeeef2;
+}
+
+@media (max-width: 768px) {
+  .filtrosContenedor {
+    overflow-x: auto;
+  }
+
+  .filtroIconoCelda {
+    flex: 0 0 65px;
+  }
+
+  .filtroTitulo {
+    flex: 0 0 130px;
+  }
+
+  .filtroDesplegable {
+    flex: 0 0 190px;
+  }
+
+  .limpiarFiltros,
+  .agregarProducto {
+    flex: 0 0 170px;
+  }
+}
+.filtrosContenedor {
+  display: flex;
+  align-items: stretch;
+
+  border: 1px solid #d2d2d2;
+  border-radius: 10px;
+
+  background-color: #f8f8fb;
+  overflow: visible;
+}
+
+.filtrarPor {
+  position: relative;
+
+  min-height: 70px;
+  padding: 10px 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+
+  background-color: transparent;
+  border: none;
+  border-right: 1px solid #d2d2d2;
+
+  color: #222222;
+}
+
+.filtrarPor:last-child {
+  border-right: none;
+}
+
+.filtrarPor p {
+  margin: 0;
+}
+
+.iconoFiltro {
+  width: clamp(20px, 2vw, 38px);
+  aspect-ratio: 1 / 1;
+}
+
+.botonFlechaFiltro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 5px;
+
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.botonFlechaFiltro img {
+  width: 17px;
+  height: 17px;
+}
+
+/* Apartado completo de categoría */
+.categoriaContenedor {
+  min-width: 220px;
+  padding: 0;
+}
+
+/* Botón que abre el desplegable */
+.botonCategoria {
+  width: 100%;
+  min-height: 70px;
+  padding: 10px 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  background-color: transparent;
+  border: none;
+
+  color: #222222;
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.flechaCategoria {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+
+  transition: transform 0.25s ease;
+}
+
+.flechaCategoriaAbierta {
+  transform: rotate(180deg);
+}
+
+/* Ventana desplegable */
+.menuCategorias {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+
+  width: 100%;
+  max-height: 280px;
+
+  padding: 8px;
+
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.14);
+
+  overflow-y: auto;
+  z-index: 200;
+}
+
+.opcionCategoria {
+  width: 100%;
+  padding: 10px 12px;
+
+  display: block;
+
+  background-color: transparent;
+  border: none;
+  border-radius: 7px;
+
+  color: #222222;
+  text-align: left;
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+.opcionCategoria:hover {
+  background-color: #f5f6fa;
+  color: #ff7900;
+}
+
+.mensajeCategorias,
+.errorCategorias {
+  margin: 8px;
+  font-size: 13px;
+}
+
+.errorCategorias {
+  color: #c62828;
+}
+
+.accionFiltro {
+  cursor: pointer;
+  font-weight: 600;
+}

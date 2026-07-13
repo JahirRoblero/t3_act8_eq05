@@ -3,6 +3,7 @@ import "./App.css";
 import Navbar from "./components/Navbar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import Login from "./components/Login.jsx";
+import BarraDeFiltros from "./components/BarraDeFiltros.jsx";
 
 function App() {
   const [sidebarAbierto, setSidebarAbierto] = useState(false);
@@ -58,6 +59,7 @@ function App() {
 
         <main className="contenidoPagina">
           <h1>Lista de productos</h1>
+          <BarraDeFiltros></BarraDeFiltros>
         </main>
       </div>
     </div>

@@ -34,3 +34,13 @@ export async function loginUser(email, password) {
 
   return data;
 }
+
+export async function obtenerCategorias() {
+  const respuesta = await fetch("https://dummyjson.com/products/categories");
+
+  if (!respuesta.ok) {
+    throw new Error("No se pudieron cargar las categorías.");
+  }
+
+  return respuesta.json();
+}
