@@ -106,7 +106,7 @@ function EditarProductoModal ({producto, clickGuardar, clickCancelar}){
 
                         <div className='modalCampo'>
                             <label htmlFor="marca">Marca</label>
-                            <input 
+                            <input
                             type="text"
                             id="marca"
                             value={marca}
