@@ -100,3 +100,9 @@
     background-color: #f0e8dd;
   }
 }
+
+.menuSidebar button.opcionActiva {
+  background-color: #f0e8dd;
+  color: #ff7900;
+  font-weight: 600;
+}

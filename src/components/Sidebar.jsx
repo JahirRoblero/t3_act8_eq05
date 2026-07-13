@@ -1,6 +1,11 @@
 import "./Sidebar.css";
 
-function Sidebar({ abierto, onCerrar }) {
+function Sidebar({
+  abierto,
+  onCerrar,
+  vistaActual,
+  onCambiarVista,
+}) {
   return (
     <aside className={`sidebar ${abierto ? "sidebarAbierto" : ""}`}>
       <div className="encabezadoSidebar">
@@ -9,8 +14,8 @@ function Sidebar({ abierto, onCerrar }) {
         </h2>
 
         <button
-          className="botonCerrarSidebar"
           type="button"
+          className="botonCerrarSidebar"
           onClick={onCerrar}
           aria-label="Cerrar menú"
         >
@@ -19,11 +24,19 @@ function Sidebar({ abierto, onCerrar }) {
       </div>
 
       <nav className="menuSidebar">
-        <button type="button" onClick={onCerrar}>
+        <button
+          type="button"
+          className={vistaActual === "inicio" ? "opcionActiva" : ""}
+          onClick={() => onCambiarVista("inicio")}
+        >
           Inicio
         </button>
 
-        <button type="button" onClick={onCerrar}>
+        <button
+          type="button"
+          className={vistaActual === "productos" ? "opcionActiva" : ""}
+          onClick={() => onCambiarVista("productos")}
+        >
           Productos
         </button>
       </nav>
