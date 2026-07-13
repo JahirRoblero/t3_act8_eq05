@@ -4,7 +4,11 @@ import flechaHaciaAbajo from "../assets/images/flechaHaciaAbajo.svg";
 import { obtenerCategorias } from "../services/api.js";
 import "./BarraDeFiltros.css";
 
-function BarraDeFiltros({ onCambiarCategoria, onCambiarDisponibilidad }) {
+function BarraDeFiltros({
+  onCambiarCategoria,
+  onCambiarDisponibilidad,
+  onCambiarRangoPrecio,
+}) {
   const [categorias, setCategorias] = useState([]);
   const [menuCategoriasAbierto, setMenuCategoriasAbierto] = useState(false);
   const [categoriaSeleccionada, setCategoriaSeleccionada] =
@@ -15,6 +19,12 @@ function BarraDeFiltros({ onCambiarCategoria, onCambiarDisponibilidad }) {
   const [disponibilidad, setDisponibilidad] = useState("Disponibilidad");
   const [menuDisponibilidadAbierto, setMenuDisponibilidadAbierto] =
     useState(false);
+
+  const [menuPrecioAbierto, setMenuPrecioAbierto] = useState(false);
+  const [precioMinimo, setPrecioMinimo] = useState("");
+  const [precioMaximo, setPrecioMaximo] = useState("");
+  const [textoRangoPrecio, setTextoRangoPrecio] = useState("Rango de precio");
+  const [errorPrecio, setErrorPrecio] = useState("");
 
   useEffect(() => {
     async function cargarCategorias() {
@@ -61,6 +71,84 @@ function BarraDeFiltros({ onCambiarCategoria, onCambiarDisponibilidad }) {
     onCambiarDisponibilidad?.("");
   }
 
+  function aplicarRangoPrecio() {
+    setErrorPrecio("");
+
+    const minimo = precioMinimo === "" ? null : Number(precioMinimo);
+
+    const maximo = precioMaximo === "" ? null : Number(precioMaximo);
+
+    if (minimo === null && maximo === null) {
+      setErrorPrecio("Ingresa al menos un precio");
+      return;
+    }
+
+    if (minimo !== null && minimo < 0) {
+      setErrorPrecio("El precio mínimo no puede ser negativo");
+      return;
+    }
+
+    if (maximo !== null && maximo < 0) {
+      setErrorPrecio("El precio máximo no puede ser negativo");
+      return;
+    }
+
+    if (minimo !== null && maximo !== null && minimo > maximo) {
+      setErrorPrecio("El precio mínimo no puede ser mayor al máximo");
+      return;
+    }
+
+    if (minimo !== null && maximo !== null) {
+      setTextoRangoPrecio(`$${minimo} - $${maximo}`);
+    } else if (minimo !== null) {
+      setTextoRangoPrecio(`Desde $${minimo}`);
+    } else {
+      setTextoRangoPrecio(`Hasta $${maximo}`);
+    }
+
+    onCambiarRangoPrecio?.({
+      minimo,
+      maximo,
+    });
+
+    setMenuPrecioAbierto(false);
+  }
+
+  function mostrarTodosLosPrecios() {
+    setPrecioMinimo("");
+    setPrecioMaximo("");
+    setTextoRangoPrecio("Rango de precio");
+    setErrorPrecio("");
+    setMenuPrecioAbierto(false);
+
+    onCambiarRangoPrecio?.({
+      minimo: null,
+      maximo: null,
+    });
+  }
+
+  function limpiarFiltros() {
+  setDisponibilidad("Disponibilidad");
+  setCategoriaSeleccionada("Categoría");
+
+  setPrecioMinimo("");
+  setPrecioMaximo("");
+  setTextoRangoPrecio("Rango de precio");
+  setErrorPrecio("");
+
+  setMenuPrecioAbierto(false);
+  setMenuCategoriasAbierto(false);
+  setMenuDisponibilidadAbierto(false);
+
+  onCambiarCategoria?.("");
+  onCambiarDisponibilidad?.("");
+
+  onCambiarRangoPrecio?.({
+    minimo: null,
+    maximo: null,
+  });
+}
+
   return (
     <div className="filtrosContenedor">
       <div className="filtrarPor">
@@ -69,12 +157,72 @@ function BarraDeFiltros({ onCambiarCategoria, onCambiarDisponibilidad }) {
         <p>Filtrar por</p>
       </div>
 
-      <div className="filtrarPor">
-        <p>Rango de precio</p>
+      <div className="filtrarPor precioContenedor">
+        <button
+          type="button"
+          className="botonRangoPrecio"
+          onClick={() =>
+            setMenuPrecioAbierto((estadoAnterior) => !estadoAnterior)
+          }
+        >
+          <span>{textoRangoPrecio}</span>
 
-        <button type="button" className="botonFlechaFiltro">
-          <img src={flechaHaciaAbajo} alt="" />
+          <img
+            className={`flechaCategoria ${
+              menuPrecioAbierto ? "flechaCategoriaAbierta" : ""
+            }`}
+            src={flechaHaciaAbajo}
+            alt=""
+          />
         </button>
+
+        {menuPrecioAbierto && (
+          <div className="menuPrecio">
+            <label className="campoPrecio">
+              <span>Precio mínimo</span>
+
+              <input
+                type="number"
+                min="0"
+                placeholder="Ejemplo: 100"
+                value={precioMinimo}
+                onChange={(evento) => setPrecioMinimo(evento.target.value)}
+              />
+            </label>
+
+            <label className="campoPrecio">
+              <span>Precio máximo</span>
+
+              <input
+                type="number"
+                min="0"
+                placeholder="Ejemplo: 1000"
+                value={precioMaximo}
+                onChange={(evento) => setPrecioMaximo(evento.target.value)}
+              />
+            </label>
+
+            {errorPrecio && <p className="errorPrecio">{errorPrecio}</p>}
+
+            <div className="accionesPrecio">
+              <button
+                type="button"
+                className="botonQuitarPrecio"
+                onClick={mostrarTodosLosPrecios}
+              >
+                Todos
+              </button>
+
+              <button
+                type="button"
+                className="botonAplicarPrecio"
+                onClick={aplicarRangoPrecio}
+              >
+                Aplicar
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="filtrarPor categoriaContenedor">
@@ -174,7 +322,11 @@ function BarraDeFiltros({ onCambiarCategoria, onCambiarDisponibilidad }) {
         )}
       </div>
 
-      <button type="button" className="filtrarPor accionFiltro">
+      <button
+        type="button"
+        className="filtrarPor accionFiltro"
+        onClick={() => limpiarFiltros()}
+      >
         Limpiar filtros
       </button>
 
