@@ -27,7 +27,7 @@ function BarraDeFiltros({
   const [textoRangoPrecio, setTextoRangoPrecio] = useState("Rango de precio");
   const [errorPrecio, setErrorPrecio] = useState("");
 
-
+ 
 
   useEffect(() => {
     async function cargarCategorias() {
