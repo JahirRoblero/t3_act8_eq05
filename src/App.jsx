@@ -35,9 +35,6 @@ function App() {
 
   const productosPorPagina = 10;
 
-  /*
-   * Cargar productos desde la API.
-   */
   useEffect(() => {
     async function cargarProductos() {
       setCargandoProductos(true);
@@ -48,7 +45,7 @@ function App() {
 
         const listaProductos = Array.isArray(datos)
           ? datos
-          : datos.products ?? [];
+          : (datos.products ?? []);
 
         setProductos(listaProductos);
       } catch (error) {
@@ -62,9 +59,6 @@ function App() {
     cargarProductos();
   }, []);
 
-  /*
-   * Regresar a la página 1 cuando se cambie algún filtro.
-   */
   useEffect(() => {
     setPaginaActual(1);
   }, [
@@ -74,9 +68,6 @@ function App() {
     rangoPrecio.maximo,
   ]);
 
-  /*
-   * Aplicar todos los filtros.
-   */
   const productosFiltrados = productos.filter((producto) => {
     const cumpleCategoria =
       categoriaSeleccionada === "" ||
@@ -90,12 +81,10 @@ function App() {
       (disponibilidadSeleccionada === "No disponible" && !estaDisponible);
 
     const cumplePrecioMinimo =
-      rangoPrecio.minimo === null ||
-      producto.price >= rangoPrecio.minimo;
+      rangoPrecio.minimo === null || producto.price >= rangoPrecio.minimo;
 
     const cumplePrecioMaximo =
-      rangoPrecio.maximo === null ||
-      producto.price <= rangoPrecio.maximo;
+      rangoPrecio.maximo === null || producto.price <= rangoPrecio.maximo;
 
     return (
       cumpleCategoria &&
@@ -105,9 +94,6 @@ function App() {
     );
   });
 
-  /*
-   * Calcular la paginación.
-   */
   const totalPaginas = Math.ceil(
     productosFiltrados.length / productosPorPagina,
   );
@@ -120,10 +106,6 @@ function App() {
     indiceFinal,
   );
 
-  /*
-   * Corregir la página cuando se elimina el último producto
-   * de una página.
-   */
   useEffect(() => {
     setPaginaActual((paginaAnterior) => {
       if (totalPaginas === 0) {
@@ -209,26 +191,39 @@ function App() {
     setProductoEditando(null);
   }
 
-  function eliminarProducto(idProducto) {
+  async function eliminarProducto(idProducto) {
     const productoEncontrado = productos.find(
       (producto) => producto.id === idProducto,
     );
 
-    const confirmarEliminacion = window.confirm(
-      `¿Seguro que quieres eliminar "${
+    const resultado = await Swal.fire({
+      title: "¿Eliminar producto?",
+      text: `¿Seguro que quieres eliminar "${
         productoEncontrado?.title || "este producto"
       }"?`,
-    );
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "rgb(255, 174, 0)",
+      cancelButtonColor: "#000000",
+    });
 
-    if (!confirmarEliminacion) {
+    if (!resultado.isConfirmed) {
       return;
     }
 
     setProductos((productosAnteriores) =>
-      productosAnteriores.filter(
-        (producto) => producto.id !== idProducto,
-      ),
+      productosAnteriores.filter((producto) => producto.id !== idProducto),
     );
+
+    await Swal.fire({
+      title: "Producto eliminado",
+      text: "El producto se eliminó correctamente.",
+      icon: "success",
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "orange"
+    });
   }
 
   function cambiarPagina(nuevaPagina) {
@@ -245,10 +240,7 @@ function App() {
    */
   function generarIndicesPaginacion() {
     if (totalPaginas <= 5) {
-      return Array.from(
-        { length: totalPaginas },
-        (_, indice) => indice + 1,
-      );
+      return Array.from({ length: totalPaginas }, (_, indice) => indice + 1);
     }
 
     if (paginaActual <= 3) {
@@ -256,22 +248,10 @@ function App() {
     }
 
     if (paginaActual >= totalPaginas - 2) {
-      return [
-        1,
-        "...",
-        totalPaginas - 2,
-        totalPaginas - 1,
-        totalPaginas,
-      ];
+      return [1, "...", totalPaginas - 2, totalPaginas - 1, totalPaginas];
     }
 
-    return [
-      1,
-      "...",
-      paginaActual,
-      "...",
-      totalPaginas,
-    ];
+    return [1, "...", paginaActual, "...", totalPaginas];
   }
 
   if (!persona) {
@@ -285,10 +265,7 @@ function App() {
 
   return (
     <div className="layoutSistema">
-      <Sidebar
-        abierto={sidebarAbierto}
-        onCerrar={cerrarSidebar}
-      />
+      <Sidebar abierto={sidebarAbierto} onCerrar={cerrarSidebar} />
 
       {sidebarAbierto && (
         <button
@@ -312,24 +289,16 @@ function App() {
 
           <BarraDeFiltros
             onCambiarCategoria={setCategoriaSeleccionada}
-            onCambiarDisponibilidad={
-              setDisponibilidadSeleccionada
-            }
+            onCambiarDisponibilidad={setDisponibilidadSeleccionada}
             onCambiarRangoPrecio={setRangoPrecio}
             onAgregarProducto={abrirModalAgregar}
           />
 
           {cargandoProductos && (
-            <p className="mensajeProductos">
-              Cargando productos...
-            </p>
+            <p className="mensajeProductos">Cargando productos...</p>
           )}
 
-          {errorProductos && (
-            <p className="errorProductos">
-              {errorProductos}
-            </p>
-          )}
+          {errorProductos && <p className="errorProductos">{errorProductos}</p>}
 
           {!cargandoProductos && !errorProductos && (
             <>
@@ -337,21 +306,11 @@ function App() {
                 {/* Este encabezado solamente se muestra una vez */}
                 <div className="cabezaTabla">
                   <p className="textoEncabezadoTabla">ID</p>
-                  <p className="textoEncabezadoTabla">
-                    Producto
-                  </p>
-                  <p className="textoEncabezadoTabla">
-                    Categoría
-                  </p>
-                  <p className="textoEncabezadoTabla">
-                    Precio
-                  </p>
-                  <p className="textoEncabezadoTabla">
-                    Stock
-                  </p>
-                  <p className="textoEncabezadoTabla">
-                    Acciones
-                  </p>
+                  <p className="textoEncabezadoTabla">Producto</p>
+                  <p className="textoEncabezadoTabla">Categoría</p>
+                  <p className="textoEncabezadoTabla">Precio</p>
+                  <p className="textoEncabezadoTabla">Stock</p>
+                  <p className="textoEncabezadoTabla">Acciones</p>
                 </div>
 
                 {productosFiltrados.length > 0 ? (
@@ -365,8 +324,7 @@ function App() {
                   ))
                 ) : (
                   <p className="mensajeSinProductos">
-                    No se encontraron productos con esos
-                    filtros.
+                    No se encontraron productos con esos filtros.
                   </p>
                 )}
               </section>
@@ -377,50 +335,36 @@ function App() {
                     type="button"
                     className="botonIndice"
                     disabled={paginaActual === 1}
-                    onClick={() =>
-                      cambiarPagina(paginaActual - 1)
-                    }
+                    onClick={() => cambiarPagina(paginaActual - 1)}
                     aria-label="Página anterior"
                   >
                     &lt;
                   </button>
 
-                  {generarIndicesPaginacion().map(
-                    (pagina, indice) =>
-                      pagina === "..." ? (
-                        <span
-                          className="puntosIndices"
-                          key={`puntos-${indice}`}
-                        >
-                          ...
-                        </span>
-                      ) : (
-                        <button
-                          type="button"
-                          key={pagina}
-                          className={`botonIndice ${
-                            paginaActual === pagina
-                              ? "indiceActivo"
-                              : ""
-                          }`}
-                          onClick={() =>
-                            cambiarPagina(pagina)
-                          }
-                        >
-                          {pagina}
-                        </button>
-                      ),
+                  {generarIndicesPaginacion().map((pagina, indice) =>
+                    pagina === "..." ? (
+                      <span className="puntosIndices" key={`puntos-${indice}`}>
+                        ...
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        key={pagina}
+                        className={`botonIndice ${
+                          paginaActual === pagina ? "indiceActivo" : ""
+                        }`}
+                        onClick={() => cambiarPagina(pagina)}
+                      >
+                        {pagina}
+                      </button>
+                    ),
                   )}
 
                   <button
                     type="button"
                     className="botonIndice"
-                    disabled={
-                      paginaActual === totalPaginas
-                    }
-                    onClick={() =>
-                      cambiarPagina(paginaActual + 1)
-                    }
+                    disabled={paginaActual === totalPaginas}
+                    onClick={() => cambiarPagina(paginaActual + 1)}
                     aria-label="Página siguiente"
                   >
                     &gt;
