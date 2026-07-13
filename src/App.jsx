@@ -2,9 +2,12 @@ import { useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
+import Login from "./components/Login.jsx"
 
 function App() {
   const [sidebarAbierto, setSidebarAbierto] = useState(false);
+  const [persona, setPersona ] = useState(null)
+
 
   function abrirSidebar() {
     setSidebarAbierto(true);
@@ -13,6 +16,24 @@ function App() {
   function cerrarSidebar() {
     setSidebarAbierto(false);
   }
+
+
+
+  function alIniciarSesion(datosUsuario) {
+    setPersona(datosUsuario);
+  }
+
+
+  function cerrarSesion() {
+    setPersona(null);
+  }
+
+
+  if (!persona) {
+    return <Login onLoginExitoso={alIniciarSesion} />;
+  }
+
+
 
   return (
     <div className="layoutSistema">
