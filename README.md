@@ -11,7 +11,7 @@
 **Integrantes:**
 Gomez Roblero Angel Jahir <br>
 Enríquez Rodríguez Alejandro Guillermo<br><br>
-**Fecha de entrega:** 13 de julio del 2026<br><br>
+**Fecha de entrega:** 14 de julio del 2026<br><br>
 
 </div>
 
@@ -64,7 +64,7 @@ A diferencia de una versión con `sessionStorage`, este proyecto maneja la sesi�
 | `enviar(e)` | `src/components/Login.jsx` | Controla el envío del formulario, muestra estado de carga y maneja errores |
 | `alIniciarSesion(datosUsuario)` | `src/App.jsx` | Guarda al usuario en el estado global de la app tras un login exitoso |
 | `cerrarSesion()` | `src/App.jsx` | Limpia el estado del usuario y regresa a la pantalla de login |
-| `[COMPLETAR CON LOS MÉTODOS DE TU COMPAÑERO: filtros, paginación, CRUD]` | `src/components/...` | |
+
 
 ---
 
@@ -119,10 +119,13 @@ Se diseñaron las 3 pantallas (login, sistema principal, formulario de edición)
 
 ### 5. [CAPTURAS]
 ![Código de sessionStorage en login.js](src/assets/screenshots/login.png)
-![Código de sessionStorage en login.js](src/assets/screenshots/agregar.png)
+![Código de sessionStorage en login.js](src/assets/screenshots/pantalla_principal.png)
 ![Código de sessionStorage en login.js](src/assets/screenshots/categoria.png)
 ![Código de sessionStorage en login.js](src/assets/screenshots/disponibilidad.png)
 ![Código de sessionStorage en login.js](src/assets/screenshots/rango-precio.png)
+![Código de sessionStorage en login.js](src/assets/screenshots/editar.png)
+![Código de sessionStorage en login.js](src/assets/screenshots/agregar.png)
+
 
 ---
 
@@ -141,6 +144,7 @@ Se diseñaron las 3 pantallas (login, sistema principal, formulario de edición)
 🔗 **Proyecto desplegado:** https://www.votaya.com.mx/t3_act8_eq05/
 
 🔗 **Repositorio:** https://github.com/JahirRoblero/t3_act8_eq05
+
 
 ---
 
