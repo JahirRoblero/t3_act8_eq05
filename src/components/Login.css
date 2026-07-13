@@ -1,0 +1,108 @@
+.loginFondo {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FAF6F0;
+}
+
+.loginCard {
+  width: 380px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 40px 32px;
+  box-shadow: 0 4px 10px black;
+  text-align: center;
+}
+
+.LoginTitle {
+  color: #422900;
+  font-size: 20px;
+  margin-bottom: 24px;
+}
+
+.loginCampo {
+  text-align: left;
+  margin-bottom: 16px;
+}
+
+.loginCampo label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: #444441;
+  margin-bottom: 6px;
+}
+
+.loginCampo input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid #d3d1c7;
+  border-radius: 8px;
+  background-color: #fafaf8;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.loginError {
+  color: #c0392b;
+  font-size: 13px;
+  margin: 8px 0;
+}
+
+.loginBoton {
+  width: 100%;
+  height: 46px;
+  background-color: #e58e00;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.loginBoton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/*Icon*/
+.loginIconoTop {
+  width: 48px;
+  height: 48px;
+  background-color: #e58e00;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.loginIconoTopImg {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);   /* lo que hacemos es pintamos de blanco usando filter ya que es un <img> normal */
+}
+
+.loginInputConIcono {
+  position: relative;
+}
+
+.loginIcono {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  /* pintarlo gris, ya que el SVG original es negro (currentColor -> negro por defecto) */
+  filter: invert(59%) sepia(4%) saturate(383%) hue-rotate(11deg) brightness(89%) contrast(87%);
+  pointer-events: none;
+}
+
+.loginInputConIcono input {
+  padding-left: 36px;
+}
