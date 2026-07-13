@@ -58,7 +58,9 @@ function Login ({onLoginExitoso}){
                         id="nombre" 
                         value = {nombre}
                         placeholder="nombre@correo.com"
-                        onChange={(e) => setNombre(e.target.value)}
+                        onChange={(e) => { setNombre(e.target.value) 
+                              if (error) setError("");
+                        }}
                         />
                         </div>
                     </div>
@@ -72,7 +74,9 @@ function Login ({onLoginExitoso}){
                              id="contraseña" 
                              placeholder="••••••••"
                              value={contraseña}
-                             onChange={(e)=> setContraseña(e.target.value)}
+                             onChange={(e)=>{setContraseña(e.target.value)
+                                if (error) setError(""); 
+                             }}
                              />
                             </div>
                         </div>
