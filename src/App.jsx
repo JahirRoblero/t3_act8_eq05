@@ -66,12 +66,10 @@ function App() {
       (disponibilidadSeleccionada === "No disponible" && !estaDisponible);
 
     const cumplePrecioMinimo =
-      rangoPrecio.minimo === null ||
-      producto.price >= rangoPrecio.minimo;
+      rangoPrecio.minimo === null || producto.price >= rangoPrecio.minimo;
 
     const cumplePrecioMaximo =
-      rangoPrecio.maximo === null ||
-      producto.price <= rangoPrecio.maximo;
+      rangoPrecio.maximo === null || producto.price <= rangoPrecio.maximo;
 
     return (
       cumpleCategoria &&
@@ -121,22 +119,22 @@ function App() {
           />
 
           <section className="listaProductos">
-            <TablaProductos></TablaProductos>
+            <div className="cabezaTabla">
+              <p className="textoEncabezadoTabla">ID</p>
+              <p className="textoEncabezadoTabla">Producto</p>
+              <p className="textoEncabezadoTabla">Categoria</p>
+              <p className="textoEncabezadoTabla">Precio</p>
+              <p className="textoEncabezadoTabla">Stock</p>
+              <p className="textoEncabezadoTabla">Acciones</p>
+            </div>
             {productosFiltrados.map((producto) => (
-              <article className="producto" key={producto.id}>
-                <img src={producto.thumbnail} alt={producto.title} />
-
-                <h2>{producto.title}</h2>
-
-                <p>Categoría: {producto.category}</p>
-
-                <p>Precio: ${producto.price}</p>
-
-                <p>
-                  Disponibilidad:{" "}
-                  {producto.stock > 0 ? "Disponible" : "No disponible"}
-                </p>
-              </article>
+              <TablaProductos
+                id={producto.id}
+                nombreProducto={producto.title}
+                categoria={producto.category}
+                precio={producto.price}
+                stock={producto.stock}
+              ></TablaProductos>
             ))}
 
             {productosFiltrados.length === 0 && (
