@@ -126,3 +126,42 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+
+/*Icon*/
+.loginIconoTop {
+  width: 48px;
+  height: 48px;
+  background-color: #e58e00;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.loginIconoTopImg {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);   /* lo que hacemos es pintamos de blanco usando filter ya que es un <img> normal */
+}
+
+.loginInputConIcono {
+  position: relative;
+}
+
+.loginIcono {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  /* pintarlo gris, ya que el SVG original es negro (currentColor -> negro por defecto) */
+  filter: invert(59%) sepia(4%) saturate(383%) hue-rotate(11deg) brightness(89%) contrast(87%);
+  pointer-events: none;
+}
+
+.loginInputConIcono input {
+  padding-left: 36px;
+}
