@@ -1,0 +1,128 @@
+.modalFondo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalCard {
+  width: 400px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 28px 24px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  text-align: center;
+}
+
+.modalHeader > div {
+  flex: 1;
+}
+
+.modalTitulo {
+  color: #422900;
+  font-size: 18px;
+  margin: 0 0 4px;
+}
+
+.modalSubtitulo {
+  color: #6b6b6b;
+  font-size: 12px;
+  margin: 0;
+}
+
+.modalCerrar {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #888780;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.modalDivider {
+  height: 1px;
+  background-color: #e5e0d5;
+  margin: 16px 0 20px;
+}
+
+.modalCampo {
+  text-align: left;
+  margin-bottom: 14px;
+}
+
+.modalCampo label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: #444441;
+  margin-bottom: 6px;
+}
+
+.modalCampo input,
+.modalCampo textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d3d1c7;
+  border-radius: 8px;
+  background-color: #fafaf8;
+  font-size: 14px;
+  box-sizing: border-box;
+  font-family: inherit;
+  color: #422900;
+}
+
+.modalCampo textarea {
+  resize: vertical;
+}
+
+.modalFila {
+  display: flex;
+  gap: 12px;
+}
+
+.modalCampoMitad {
+  flex: 1;
+}
+
+.modalBotones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modalBotonCancelar {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid #d3d1c7;
+  background-color: #ffffff;
+  color: #422900;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.modalBotonGuardar {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  background-color: #e58e00;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
