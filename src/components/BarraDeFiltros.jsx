@@ -144,7 +144,33 @@ function BarraDeFiltros({ onCambiarCategoria, onCambiarDisponibilidad }) {
         </button>
 
         {menuDisponibilidadAbierto && (
-          <div className="menuDisponibilidad"></div>
+          <div className="menuCategorias">
+            <button
+              type="button"
+              className="opcionCategoria"
+              onClick={mostrarTodasLasDisponibilidades}
+            >
+              Todas las disponibilidad
+            </button>
+
+            <button
+              type="button"
+              className="opcionCategoria"
+              key="disponible"
+              onClick={() => seleccionarDisponibilidad("disponible")}
+            >
+              Disponible
+            </button>
+
+            <button
+              type="button"
+              className="opcionCategoria"
+              key="No disponible"
+              onClick={() => seleccionarDisponibilidad("No disponible")}
+            >
+              No disponible
+            </button>
+          </div>
         )}
       </div>
 
