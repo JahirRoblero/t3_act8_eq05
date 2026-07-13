@@ -234,10 +234,6 @@ function App() {
     setPaginaActual(nuevaPagina);
   }
 
-  /*
-   * Genera índices como:
-   * < 1 2 3 ... 10 >
-   */
   function generarIndicesPaginacion() {
     if (totalPaginas <= 5) {
       return Array.from({ length: totalPaginas }, (_, indice) => indice + 1);
@@ -303,7 +299,6 @@ function App() {
           {!cargandoProductos && !errorProductos && (
             <>
               <section className="listaProductos">
-                {/* Este encabezado solamente se muestra una vez */}
                 <div className="cabezaTabla">
                   <p className="textoEncabezadoTabla">ID</p>
                   <p className="textoEncabezadoTabla">Producto</p>

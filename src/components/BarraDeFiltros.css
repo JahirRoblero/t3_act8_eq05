@@ -82,7 +82,8 @@
 
 @media (max-width: 768px) {
   .filtrosContenedor {
-    overflow-x: auto;
+    display: flex;
+    flex-direction: column;
   }
 
   .filtroIconoCelda {

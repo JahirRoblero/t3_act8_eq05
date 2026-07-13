@@ -49,3 +49,14 @@
 .botonEliminar:hover {
     scale: calc(1.03);
 }
+
+@media (max-width:768px) {
+    .contenidoTabla{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cabezaTabla{
+        display: none;
+    }
+}
