@@ -11,23 +11,17 @@ import EditarProductoModal from "./components/EditarProductoModal.jsx";
 import { obtenerProductos } from "./services/api.js";
 
 function App() {
-  // Usuario que inició sesión
   const [persona, setPersona] = useState(null);
 
-  // Sidebar para teléfonos
   const [sidebarAbierto, setSidebarAbierto] = useState(false);
 
-  // Productos obtenidos de la API
   const [productos, setProductos] = useState([]);
 
-  // Producto que se está editando
   const [productoEditando, setProductoEditando] = useState(null);
 
-  // Estados de carga y error
   const [cargandoProductos, setCargandoProductos] = useState(true);
   const [errorProductos, setErrorProductos] = useState("");
 
-  // Filtros
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
   const [disponibilidadSeleccionada, setDisponibilidadSeleccionada] =
     useState("");
@@ -37,7 +31,6 @@ function App() {
     maximo: null,
   });
 
-  // Cargar productos cuando se monta App
   useEffect(() => {
     async function cargarProductos() {
       setCargandoProductos(true);
@@ -46,9 +39,6 @@ function App() {
       try {
         const datos = await obtenerProductos();
 
-        // Funciona tanto si la API devuelve:
-        // { products: [...] }
-        // como si devuelve directamente [...]
         setProductos(datos.products ?? datos);
       } catch (error) {
         console.error("Error al obtener productos:", error);
@@ -61,10 +51,6 @@ function App() {
     cargarProductos();
   }, []);
 
-  // -------------------------
-  // SIDEBAR
-  // -------------------------
-
   function abrirSidebar() {
     setSidebarAbierto(true);
   }
@@ -73,9 +59,6 @@ function App() {
     setSidebarAbierto(false);
   }
 
-  // -------------------------
-  // LOGIN
-  // -------------------------
 
   function alIniciarSesion(datosUsuario) {
     console.log("Usuario recibido:", datosUsuario);
@@ -88,18 +71,8 @@ function App() {
     setProductoEditando(null);
   }
 
-  // -------------------------
-  // EDITAR PRODUCTO
-  // -------------------------
 
   function abrirModalEditar(producto) {
-    const confirmarEdicion = window.confirm(
-      `¿Quieres editar el producto "${producto.title}"?`,
-    );
-
-    if (!confirmarEdicion) {
-      return;
-    }
 
     setProductoEditando(producto);
   }
@@ -126,13 +99,8 @@ function App() {
       }),
     );
 
-    // Cerrar modal después de guardar
     setProductoEditando(null);
   }
-
-  // -------------------------
-  // ELIMINAR PRODUCTO
-  // -------------------------
 
   function eliminarProducto(idProducto) {
     const productoEncontrado = productos.find(
@@ -155,10 +123,6 @@ function App() {
       ),
     );
   }
-
-  // -------------------------
-  // FILTRAR PRODUCTOS
-  // -------------------------
 
   const productosFiltrados = productos.filter((producto) => {
     const cumpleCategoria =
@@ -187,8 +151,6 @@ function App() {
       cumplePrecioMaximo
     );
   });
-
-  // Si no hay usuario, mostrar login
   if (!persona) {
     return <Login onLoginExitoso={alIniciarSesion} />;
   }
