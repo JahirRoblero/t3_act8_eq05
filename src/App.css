@@ -46,7 +46,7 @@ select {
 
 .contenidoPagina {
   width: 100%;
-  max-width: 1600px;
+  max-width: 2600px;
   margin: 0 auto;
   padding: 35px 30px;
 }
@@ -427,5 +427,50 @@ select {
     min-width: 34px;
     height: 36px;
     padding: 0 6px;
+  }
+}
+
+.paginaInicio {
+  min-height: calc(100vh - 95px);
+
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.paginaInicio > h1 {
+  margin: 0;
+
+  font-size: clamp(25px, 2vw, 34px);
+  font-weight: 700;
+}
+
+.bienvenidaCentral {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding-bottom: 90px;
+  text-align: center;
+}
+
+.bienvenidaCentral h2 {
+  margin: 0;
+
+  font-size: clamp(25px, 2.2vw, 38px);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.paginaProductos > h1 {
+  margin: 0 0 20px;
+}
+
+@media (max-width: 768px) {
+  .paginaInicio {
+    min-height: calc(100vh - 80px);
+  }
+
+  .bienvenidaCentral {
+    padding-bottom: 40px;
   }
 }
