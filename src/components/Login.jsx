@@ -13,12 +13,20 @@ function Login ({onLoginExitoso}){
 
 
     function validacionCampos(){
-        if(nombre.trim() === "" || contraseña.trim() === ""){
-            setError("Completa el usuario y contraseña.")
-            return false;
-        }
-        return true
+    const formatoCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (nombre.trim() === "" || contraseña.trim() === "") {
+        setError("Completa el usuario y contraseña.");
+        return false;
     }
+
+    if (!formatoCorreo.test(nombre)) {
+        setError("Ingresa un correo electrónico válido: ejemplo@correo.com.");
+        return false;
+    }
+
+    return true;
+}
 
     async function enviar(e) {
         e.preventDefault();
