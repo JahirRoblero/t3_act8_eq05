@@ -1,5 +1,8 @@
 import {useState} from "react"
 import {loginUser} from "../services/api.js"
+import iconPersona from "../assets/icons/icon-pers.svg";
+import iconEmail from "../assets/icons/icon-email.svg";
+import iconPassword from "../assets/icons/icon-password.svg";
 import "./Login.css"
 
 function Login ({onLoginExitoso}){
@@ -39,12 +42,17 @@ function Login ({onLoginExitoso}){
     return(
         <div className="loginFondo">
             <div className="loginCard">
+                <div className="loginIconoTop">
+                <img src={iconPersona} alt="" className="loginIconoTopImg" />
+                </div>
                 <h2 className="LoginTitle">INICIA SESIÓN</h2>
 
 
                 <form onSubmit= {enviar}>
                     <div className="loginCampo">
                         <label htmlFor="nombre">Correo Electrónico</label>
+                        <div className="loginInputConIcono">
+                        <img src={iconEmail} alt="" className="loginIcono" />
                         <input 
                         type="text" 
                         id="nombre" 
@@ -53,8 +61,12 @@ function Login ({onLoginExitoso}){
                         onChange={(e) => setNombre(e.target.value)}
                         />
                         </div>
+                    </div>
+
                         <div className="loginCampo">
                             <label htmlFor="contraseña">Contraseña</label>
+                            <div className="loginInputConIcono">
+                            <img src={iconPassword} alt="" className="loginIcono" />
                             <input 
                              type="password" 
                              id="contraseña" 
@@ -62,6 +74,7 @@ function Login ({onLoginExitoso}){
                              value={contraseña}
                              onChange={(e)=> setContraseña(e.target.value)}
                              />
+                            </div>
                         </div>
                             {error && <p className="loginError">{error}</p>}
                             <button type="submit" className="loginBoton" disabled={cargando}>
