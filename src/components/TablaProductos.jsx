@@ -1,48 +1,33 @@
+import FilaProducto from "./FilaProducto.jsx";
 import "./TablaProductos.css";
 
-function TablaProductos({
-  producto,
-  onEditar,
-  onEliminar,
-}) {
+function TablaProductos({ productos, onEditar, onEliminar }) {
   return (
-    <div className="contenidoTabla">
-      <p className="datosProducto">{producto.id}</p>
-
-      <p className="datosProducto">
-        {producto.title}
-      </p>
-
-      <p className="datosProducto">
-        {producto.category}
-      </p>
-
-      <p className="datosProducto">
-        ${producto.price}
-      </p>
-
-      <p className="datosProducto">
-        {producto.stock}
-      </p>
-
-      <div className="botones">
-        <button
-          type="button"
-          className="botonEditar"
-          onClick={() => onEditar(producto)}
-        >
-          Editar
-        </button>
-
-        <button
-          type="button"
-          className="botonEliminar"
-          onClick={() => onEliminar(producto.id)}
-        >
-          Eliminar
-        </button>
+    <section className="listaProductos">
+      <div className="cabezaTabla">
+        <p className="textoEncabezadoTabla">ID</p>
+        <p className="textoEncabezadoTabla">Producto</p>
+        <p className="textoEncabezadoTabla">Categoría</p>
+        <p className="textoEncabezadoTabla">Precio</p>
+        <p className="textoEncabezadoTabla">Stock</p>
+        <p className="textoEncabezadoTabla">Acciones</p>
       </div>
-    </div>
+
+      {productos.length > 0 ? (
+        productos.map((producto) => (
+          <FilaProducto
+            key={producto.id}
+            producto={producto}
+            onEditar={onEditar}
+            onEliminar={onEliminar}
+          />
+        ))
+      ) : (
+        <p className="mensajeSinProductos">
+          No se encontraron productos con esos filtros.
+        </p>
+      )}
+    </section>
   );
 }
 

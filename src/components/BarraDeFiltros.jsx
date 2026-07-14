@@ -1,33 +1,40 @@
 import { useEffect, useState } from "react";
+
 import iconoFiltro from "../assets/icons/iconoFiltro.svg";
 import flechaHaciaAbajo from "../assets/images/flechaHaciaAbajo.svg";
+
 import { obtenerCategorias } from "../services/api.js";
+
 import "./BarraDeFiltros.css";
 
 function BarraDeFiltros({
   onCambiarCategoria,
   onCambiarDisponibilidad,
   onCambiarRangoPrecio,
-  onAgregarProducto
+  onAgregarProducto,
 }) {
   const [categorias, setCategorias] = useState([]);
-  const [menuCategoriasAbierto, setMenuCategoriasAbierto] = useState(false);
-  const [categoriaSeleccionada, setCategoriaSeleccionada] =
-    useState("Categoría");
   const [cargandoCategorias, setCargandoCategorias] = useState(false);
   const [errorCategorias, setErrorCategorias] = useState("");
 
-  const [disponibilidad, setDisponibilidad] = useState("Disponibilidad");
+  const [menuCategoriasAbierto, setMenuCategoriasAbierto] =
+    useState(false);
+
+  const [categoriaSeleccionada, setCategoriaSeleccionada] =
+    useState("Categoría");
+
   const [menuDisponibilidadAbierto, setMenuDisponibilidadAbierto] =
     useState(false);
+
+  const [disponibilidadSeleccionada, setDisponibilidadSeleccionada] =
+    useState("Disponibilidad");
 
   const [menuPrecioAbierto, setMenuPrecioAbierto] = useState(false);
   const [precioMinimo, setPrecioMinimo] = useState("");
   const [precioMaximo, setPrecioMaximo] = useState("");
-  const [textoRangoPrecio, setTextoRangoPrecio] = useState("Rango de precio");
+  const [textoRangoPrecio, setTextoRangoPrecio] =
+    useState("Rango de precio");
   const [errorPrecio, setErrorPrecio] = useState("");
-
- 
 
   useEffect(() => {
     async function cargarCategorias() {
@@ -61,25 +68,28 @@ function BarraDeFiltros({
     onCambiarCategoria?.("");
   }
 
-  function seleccionarDisponibilidad(disponibilidad) {
-    setDisponibilidad(disponibilidad);
+  function seleccionarDisponibilidad(valor, texto) {
+    setDisponibilidadSeleccionada(texto);
     setMenuDisponibilidadAbierto(false);
 
-    onCambiarDisponibilidad?.(disponibilidad);
+    onCambiarDisponibilidad?.(valor);
   }
 
   function mostrarTodasLasDisponibilidades() {
-    setDisponibilidad("Disponibilidad");
+    setDisponibilidadSeleccionada("Disponibilidad");
     setMenuDisponibilidadAbierto(false);
+
     onCambiarDisponibilidad?.("");
   }
 
   function aplicarRangoPrecio() {
     setErrorPrecio("");
 
-    const minimo = precioMinimo === "" ? null : Number(precioMinimo);
+    const minimo =
+      precioMinimo === "" ? null : Number(precioMinimo);
 
-    const maximo = precioMaximo === "" ? null : Number(precioMaximo);
+    const maximo =
+      precioMaximo === "" ? null : Number(precioMaximo);
 
     if (minimo === null && maximo === null) {
       setErrorPrecio("Ingresa al menos un precio");
@@ -96,8 +106,15 @@ function BarraDeFiltros({
       return;
     }
 
-    if (minimo !== null && maximo !== null && minimo > maximo) {
-      setErrorPrecio("El precio mínimo no puede ser mayor al máximo");
+    if (
+      minimo !== null &&
+      maximo !== null &&
+      minimo > maximo
+    ) {
+      setErrorPrecio(
+        "El precio mínimo no puede ser mayor al máximo",
+      );
+
       return;
     }
 
@@ -131,31 +148,35 @@ function BarraDeFiltros({
   }
 
   function limpiarFiltros() {
-  setDisponibilidad("Disponibilidad");
-  setCategoriaSeleccionada("Categoría");
+    setCategoriaSeleccionada("Categoría");
+    setDisponibilidadSeleccionada("Disponibilidad");
 
-  setPrecioMinimo("");
-  setPrecioMaximo("");
-  setTextoRangoPrecio("Rango de precio");
-  setErrorPrecio("");
+    setPrecioMinimo("");
+    setPrecioMaximo("");
+    setTextoRangoPrecio("Rango de precio");
+    setErrorPrecio("");
 
-  setMenuPrecioAbierto(false);
-  setMenuCategoriasAbierto(false);
-  setMenuDisponibilidadAbierto(false);
+    setMenuPrecioAbierto(false);
+    setMenuCategoriasAbierto(false);
+    setMenuDisponibilidadAbierto(false);
 
-  onCambiarCategoria?.("");
-  onCambiarDisponibilidad?.("");
+    onCambiarCategoria?.("");
+    onCambiarDisponibilidad?.("");
 
-  onCambiarRangoPrecio?.({
-    minimo: null,
-    maximo: null,
-  });
-}
+    onCambiarRangoPrecio?.({
+      minimo: null,
+      maximo: null,
+    });
+  }
 
   return (
     <div className="filtrosContenedor">
       <div className="filtrarPor">
-        <img className="iconoFiltro" src={iconoFiltro} alt="Filtros" />
+        <img
+          className="iconoFiltro"
+          src={iconoFiltro}
+          alt="Filtros"
+        />
 
         <p>Filtrar por</p>
       </div>
@@ -165,14 +186,18 @@ function BarraDeFiltros({
           type="button"
           className="botonRangoPrecio"
           onClick={() =>
-            setMenuPrecioAbierto((estadoAnterior) => !estadoAnterior)
+            setMenuPrecioAbierto(
+              (estadoAnterior) => !estadoAnterior,
+            )
           }
         >
           <span>{textoRangoPrecio}</span>
 
           <img
             className={`flechaCategoria ${
-              menuPrecioAbierto ? "flechaCategoriaAbierta" : ""
+              menuPrecioAbierto
+                ? "flechaCategoriaAbierta"
+                : ""
             }`}
             src={flechaHaciaAbajo}
             alt=""
@@ -189,7 +214,9 @@ function BarraDeFiltros({
                 min="0"
                 placeholder="Ejemplo: 100"
                 value={precioMinimo}
-                onChange={(evento) => setPrecioMinimo(evento.target.value)}
+                onChange={(evento) =>
+                  setPrecioMinimo(evento.target.value)
+                }
               />
             </label>
 
@@ -201,11 +228,15 @@ function BarraDeFiltros({
                 min="0"
                 placeholder="Ejemplo: 1000"
                 value={precioMaximo}
-                onChange={(evento) => setPrecioMaximo(evento.target.value)}
+                onChange={(evento) =>
+                  setPrecioMaximo(evento.target.value)
+                }
               />
             </label>
 
-            {errorPrecio && <p className="errorPrecio">{errorPrecio}</p>}
+            {errorPrecio && (
+              <p className="errorPrecio">{errorPrecio}</p>
+            )}
 
             <div className="accionesPrecio">
               <button
@@ -233,14 +264,18 @@ function BarraDeFiltros({
           type="button"
           className="botonCategoria"
           onClick={() =>
-            setMenuCategoriasAbierto((estadoAnterior) => !estadoAnterior)
+            setMenuCategoriasAbierto(
+              (estadoAnterior) => !estadoAnterior,
+            )
           }
         >
           <span>{categoriaSeleccionada}</span>
 
           <img
             className={`flechaCategoria ${
-              menuCategoriasAbierto ? "flechaCategoriaAbierta" : ""
+              menuCategoriasAbierto
+                ? "flechaCategoriaAbierta"
+                : ""
             }`}
             src={flechaHaciaAbajo}
             alt=""
@@ -262,7 +297,9 @@ function BarraDeFiltros({
             )}
 
             {errorCategorias && (
-              <p className="errorCategorias">{errorCategorias}</p>
+              <p className="errorCategorias">
+                {errorCategorias}
+              </p>
             )}
 
             {!cargandoCategorias &&
@@ -272,7 +309,9 @@ function BarraDeFiltros({
                   type="button"
                   className="opcionCategoria"
                   key={categoria.slug}
-                  onClick={() => seleccionarCategoria(categoria)}
+                  onClick={() =>
+                    seleccionarCategoria(categoria)
+                  }
                 >
                   {categoria.name}
                 </button>
@@ -286,10 +325,12 @@ function BarraDeFiltros({
           type="button"
           className="botonFlechaFiltro"
           onClick={() =>
-            setMenuDisponibilidadAbierto((estadoAnterior) => !estadoAnterior)
+            setMenuDisponibilidadAbierto(
+              (estadoAnterior) => !estadoAnterior,
+            )
           }
         >
-          <span>{disponibilidad}</span>
+          <span>{disponibilidadSeleccionada}</span>
 
           <img src={flechaHaciaAbajo} alt="" />
         </button>
@@ -301,14 +342,18 @@ function BarraDeFiltros({
               className="opcionCategoria"
               onClick={mostrarTodasLasDisponibilidades}
             >
-              Todas las disponibilidad
+              Todas las disponibilidades
             </button>
 
             <button
               type="button"
               className="opcionCategoria"
-              key="disponible"
-              onClick={() => seleccionarDisponibilidad("disponible")}
+              onClick={() =>
+                seleccionarDisponibilidad(
+                  "disponible",
+                  "Disponible",
+                )
+              }
             >
               Disponible
             </button>
@@ -316,8 +361,12 @@ function BarraDeFiltros({
             <button
               type="button"
               className="opcionCategoria"
-              key="No disponible"
-              onClick={() => seleccionarDisponibilidad("No disponible")}
+              onClick={() =>
+                seleccionarDisponibilidad(
+                  "no disponible",
+                  "No disponible",
+                )
+              }
             >
               No disponible
             </button>
@@ -328,12 +377,16 @@ function BarraDeFiltros({
       <button
         type="button"
         className="filtrarPor accionFiltro"
-        onClick={() => limpiarFiltros()}
+        onClick={limpiarFiltros}
       >
         Limpiar filtros
       </button>
 
-      <button type="button" className="filtrarPor accionFiltro" onClick={onAgregarProducto}>
+      <button
+        type="button"
+        className="filtrarPor accionFiltro"
+        onClick={onAgregarProducto}
+      >
         Agregar producto
       </button>
     </div>

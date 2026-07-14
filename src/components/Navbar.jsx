@@ -1,7 +1,8 @@
 import { useState } from "react";
+
 import imagenJahir from "../assets/images/imagenJahir.png";
 import flechaHaciaAbajo from "../assets/images/flechaHaciaAbajo.svg";
-import buscarIcono from "../assets/images/buscarIcono.svg";
+
 import "./Navbar.css";
 
 function Navbar({
@@ -13,11 +14,12 @@ function Navbar({
   const [menuUsuarioAbierto, setMenuUsuarioAbierto] = useState(false);
 
   function cambiarEstadoMenu() {
-    if (menuUsuarioAbierto === false) {
-      setMenuUsuarioAbierto(true);
-    } else {
-      setMenuUsuarioAbierto(false);
-    }
+    setMenuUsuarioAbierto((estadoAnterior) => !estadoAnterior);
+  }
+
+  function cerrarSesion() {
+    setMenuUsuarioAbierto(false);
+    onCerrarSesion();
   }
 
   return (
@@ -31,16 +33,6 @@ function Navbar({
         >
           ☰
         </button>
-
-        <div className="contenedorBuscador">
-          <img className="iconoBuscar" src={buscarIcono} alt="" />
-
-          <input
-            className="buscador"
-            type="text"
-            placeholder="Buscar producto"
-          />
-        </div>
       </div>
 
       <div className="contenedorUsuario">
@@ -74,7 +66,7 @@ function Navbar({
               <button
                 className="botonCerrarSesion"
                 type="button"
-                onClick={onCerrarSesion}
+                onClick={cerrarSesion}
               >
                 Cerrar sesión
               </button>
