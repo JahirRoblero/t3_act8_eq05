@@ -114,7 +114,7 @@ function EditarProductoModal({
             <div className="modalCampo modalCampoMitad">
               <label htmlFor="stock">Stock</label>
               <div className="loginInputConIcono">
-              <img src={iconTr} alt="" className="loginIcono" />      
+              <img src={iconStock} alt="" className="loginIcono" />      
               <input
                 type="number"
                 id="stock"
